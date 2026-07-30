@@ -59,33 +59,116 @@
             backdrop-filter: blur(10px);
         }
         #controls .row-top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        #controls .row-bottom { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        #controls .row-bottom { 
+            display: flex; 
+            gap: 6px; 
+            align-items: center; 
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
         #controls .app-title { font-weight: 700; color: #1a73e8; font-size: 18px; flex-shrink: 0; }
-        #controls select, #controls button {
-            padding: 10px 14px;
-            border-radius: 30px;
+        
+        /* ===== BOTTOM NAV BUTTONS ===== */
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 50px;
+            flex: 1;
+            gap: 2px;
+            text-decoration: none;
+        }
+        .nav-btn .icon {
+            font-size: 20px;
+            display: block;
+        }
+        .nav-btn .label {
+            font-size: 9px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .nav-btn.active {
+            background: #e8f0fe;
+            color: #1a73e8;
+        }
+        .nav-btn.active .label { color: #1a73e8; }
+        .nav-btn:active { transform: scale(0.95); }
+        .nav-btn.primary { background: #1a73e8; color: white; }
+        .nav-btn.primary .label { color: rgba(255,255,255,0.8); }
+        .nav-btn.primary:active { background: #1557b0; }
+        .nav-btn.fav-btn.active { background: #d93025; color: white; }
+        .nav-btn.fav-btn.active .label { color: white; }
+        
+        #controls select {
+            padding: 8px 12px;
+            border-radius: 20px;
             border: 1px solid #e0e0e0;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             background: white;
             flex: 1;
-            min-width: 0;
-        }
-        #controls select {
+            min-width: 60px;
             -webkit-appearance: none;
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 12px center;
-            padding-right: 32px;
+            background-position: right 10px center;
+            padding-right: 28px;
         }
-        .btn-primary { background: #1a73e8; color: white; border: none !important; flex: 0.8 !important; }
-        .btn-primary:active { background: #1557b0; transform: scale(0.97); }
-        .btn-favorites { background: #ff6d00; color: white; border: none !important; flex: 0.8 !important; }
-        .btn-favorites:active { background: #e65100; transform: scale(0.97); }
-        .btn-favorites.active { background: #d93025; }
+        #controls select:focus { border-color: #1a73e8; outline: none; }
         #controls .badge-count { background: #ff7800; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+        
+        /* ===== PRICE FILTER ===== */
+        .price-filter {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            flex: 1.5;
+            min-width: 100px;
+        }
+        .price-filter input {
+            padding: 6px 8px;
+            border-radius: 16px;
+            border: 1px solid #e0e0e0;
+            font-size: 11px;
+            width: 55px;
+            text-align: center;
+            background: white;
+        }
+        .price-filter input:focus { border-color: #1a73e8; outline: none; }
+        .price-filter .price-label { font-size: 10px; color: #666; font-weight: 600; }
+        .price-filter .clear-btn {
+            padding: 4px 10px;
+            border-radius: 16px;
+            border: 1px solid #d93025;
+            background: transparent;
+            color: #d93025;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .price-filter .clear-btn:active { transform: scale(0.95); }
+        
+        /* ===== BOTTOM NAV ROW ===== */
+        .nav-row {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            width: 100%;
+            justify-content: space-around;
+        }
         
         #loading {
             position: absolute;
@@ -125,7 +208,6 @@
             margin: 6px 0;
         }
         
-        /* ===== POPUP ACTIONS ===== */
         .popup-actions {
             display: flex;
             gap: 6px;
@@ -204,10 +286,16 @@
             background: none;
             border: none;
         }
-        #favoritesPanel .close-panel:hover { color: #333; }
         
         @media screen and (max-width: 480px) {
             #favoritesPanel { width: 260px; right: 5px; }
+            .price-filter input { width: 45px; font-size: 10px; padding: 4px 6px; }
+            .price-filter .price-label { font-size: 9px; }
+            .nav-btn { min-width: 40px; padding: 4px 6px; }
+            .nav-btn .icon { font-size: 16px; }
+            .nav-btn .label { font-size: 8px; }
+            .popup-text { max-width: 200px; }
+            .leaflet-popup-content { min-width: 180px !important; max-width: 200px !important; }
         }
     </style>
 </head>
@@ -231,10 +319,11 @@
         <span class="app-title">🏠 Saka Keja</span>
         <span class="badge-count" id="countBadge">0 houses</span>
     </div>
+    
+    <!-- Filter Row -->
     <div class="row-bottom">
-        <button id="favoritesToggle" class="btn-favorites">❤️ Favorites</button>
         <select id="typeFilter">
-            <option value="all">🏠 All</option>
+            <option value="all">🏠 All Types</option>
             <option value="bedsitter">🛏️ Bedsitter</option>
             <option value="1 bedroom">🛏️ 1 BR</option>
             <option value="2 bedrooms">🛏️ 2 BR</option>
@@ -242,7 +331,29 @@
             <option value="single room">🛏️ Single</option>
             <option value="studio">🛏️ Studio</option>
         </select>
-        <button id="find-me" class="btn-primary">📍 Near</button>
+        <div class="price-filter">
+            <span class="price-label">💰</span>
+            <input type="number" id="minPrice" placeholder="Min" min="0" step="1000">
+            <span class="price-label">-</span>
+            <input type="number" id="maxPrice" placeholder="Max" min="0" step="1000">
+            <button class="clear-btn" id="clearPrice">✕</button>
+        </div>
+    </div>
+    
+    <!-- Navigation Buttons with Labels -->
+    <div class="nav-row">
+        <button class="nav-btn" id="favoritesToggle">
+            <span class="icon">❤️</span>
+            <span class="label">Favorites</span>
+        </button>
+        <button class="nav-btn active" id="mapViewBtn">
+            <span class="icon">🗺️</span>
+            <span class="label">Map</span>
+        </button>
+        <button class="nav-btn primary" id="find-me">
+            <span class="icon">📍</span>
+            <span class="label">Near Me</span>
+        </button>
     </div>
 </div>
 
@@ -277,6 +388,8 @@
 
     let currentUser = null;
     let currentFilter = 'all';
+    let minPrice = 0;
+    let maxPrice = 0;
     let housesData = [];
     let favorites = {};
     let map = null;
@@ -331,7 +444,6 @@
                 favorites[houseId] = true;
                 console.log('✅ Added to favorites');
             }
-            // Refresh the map to show updated heart states
             renderHouses(housesData);
             renderFavorites();
         } catch (error) {
@@ -345,8 +457,6 @@
     // ==============================================================
     function renderFavorites() {
         const list = document.getElementById('favoritesList');
-        
-        // Get all favorite house IDs
         const favIds = Object.keys(favorites).filter(id => favorites[id] === true);
         
         if (favIds.length === 0) {
@@ -354,7 +464,6 @@
             return;
         }
 
-        // Find the full house data for each favorite
         let html = '';
         favIds.forEach(id => {
             const house = housesData.find(h => h.id === id);
@@ -367,7 +476,6 @@
                     </div>
                 `;
             } else {
-                // House might have been deleted - clean up
                 db.collection('users').doc(currentUser.uid).collection('favorites').doc(id).delete();
                 delete favorites[id];
             }
@@ -395,7 +503,6 @@
     // ==============================================================
     async function loadFavorites() {
         if (!currentUser) return;
-        
         try {
             const snapshot = await db.collection('users').doc(currentUser.uid).collection('favorites').get();
             favorites = {};
@@ -468,22 +575,36 @@
     }
 
     // ==============================================================
-    // RENDER HOUSES WITH FAVORITES
+    // RENDER HOUSES WITH FILTERS
     // ==============================================================
     function renderHouses(houses) {
         if (!markerLayer) return;
         markerLayer.clearLayers();
         
         let filtered = houses;
+        
+        // Filter by property type
         if (currentFilter !== 'all') {
-            filtered = houses.filter(h => h.propertyType && h.propertyType.toLowerCase() === currentFilter);
+            filtered = filtered.filter(h => h.propertyType && h.propertyType.toLowerCase() === currentFilter);
+        }
+        
+        // Filter by price range
+        const minVal = parseInt(document.getElementById('minPrice').value) || 0;
+        const maxVal = parseInt(document.getElementById('maxPrice').value) || 0;
+        
+        if (minVal > 0 || maxVal > 0) {
+            filtered = filtered.filter(h => {
+                const price = parseInt(h.price.replace(/,/g, '')) || 0;
+                if (minVal > 0 && price < minVal) return false;
+                if (maxVal > 0 && price > maxVal) return false;
+                return true;
+            });
         }
 
         filtered.forEach(house => {
             if (!house.lat || !house.lng) return;
             const marker = L.marker([house.lat, house.lng], { riseOnHover: true }).addTo(markerLayer);
             
-            // Build photo HTML
             let photoHtml = '';
             if (house.photoUrl && house.photoUrl.startsWith('http')) {
                 photoHtml = `<img src="${house.photoUrl}" class="property-photo" alt="Property photo" onerror="this.style.display='none'">`;
@@ -491,17 +612,14 @@
                 photoHtml = `<div class="no-photo">📷 No photo uploaded</div>`;
             }
             
-            // Format phone for WhatsApp
             const phoneDigits = house.phoneNumber ? house.phoneNumber.replace(/\D/g, '') : '';
             const whatsappLink = phoneDigits ? `https://wa.me/254${phoneDigits.replace(/^0+/, '')}` : '#';
             const callLink = house.phoneNumber ? `tel:${house.phoneNumber}` : '#';
             
-            // Check if this house is favorited
             const isFav = favorites[house.id] || false;
             const favClass = isFav ? 'active' : '';
             const favText = isFav ? '❤️' : '🤍';
             
-            // Build popup content
             let popupContent = `
                 <div class="popup-text">
                     <strong>${house.propertyName || 'Property'}</strong>
@@ -545,6 +663,23 @@
     }
 
     // ==============================================================
+    // PRICE FILTER EVENT LISTENERS
+    // ==============================================================
+    document.getElementById('minPrice').addEventListener('input', function() {
+        renderHouses(housesData);
+    });
+    
+    document.getElementById('maxPrice').addEventListener('input', function() {
+        renderHouses(housesData);
+    });
+    
+    document.getElementById('clearPrice').addEventListener('click', function() {
+        document.getElementById('minPrice').value = '';
+        document.getElementById('maxPrice').value = '';
+        renderHouses(housesData);
+    });
+
+    // ==============================================================
     // EVENT LISTENERS
     // ==============================================================
     document.getElementById('typeFilter').addEventListener('change', function(e) {
@@ -569,7 +704,7 @@
         }
     });
 
-    console.log('✅ Saka Keja Tenant App loaded!');
+    console.log('✅ Saka Keja Tenant App loaded with Labels!');
 </script>
 </body>
 </html>
