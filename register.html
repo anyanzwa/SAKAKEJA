@@ -120,13 +120,16 @@
         // ==============================================================
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
             const name = document.getElementById('registerName').value.trim();
             const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
             const roleRadio = document.querySelector('input[name="role"]:checked');
             const role = roleRadio ? roleRadio.value : 'tenant';
+            
             const errorDiv = document.getElementById('registerError');
             const successDiv = document.getElementById('registerSuccess');
+            
             errorDiv.textContent = '';
             successDiv.textContent = '';
 
