@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - Saka Keja</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+            padding: 20px;
+        }
+        .auth-box {
+            background: white;
+            padding: 30px 25px;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .auth-box h1 { font-size: 28px; color: #1a73e8; margin-bottom: 4px; }
+        .auth-box .subtitle { color: #666; margin-bottom: 20px; font-size: 14px; }
+        .auth-box input {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 8px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            background: #f8f9fa;
+            transition: border-color 0.2s;
+        }
+        .auth-box input:focus { border-color: #1a73e8; outline: none; background: white; }
+        .auth-box button {
+            width: 100%;
+            padding: 16px;
+            margin: 12px 0 8px;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            background: #1a73e8;
+            color: white;
+            transition: background 0.2s;
+        }
+        .auth-box button:active { transform: scale(0.98); }
+        .auth-box button:hover { background: #1557b0; }
+        .auth-box .toggle-link { text-align: center; margin-top: 12px; font-size: 14px; color: #555; }
+        .auth-box .toggle-link a { color: #1a73e8; font-weight: 600; cursor: pointer; text-decoration: none; }
+        .auth-box .error-msg { color: #d93025; font-size: 14px; text-align: center; margin-top: 8px; }
+        .auth-box .success-msg { color: #0f9d58; font-size: 14px; text-align: center; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <div class="auth-box">
+        <h1>🏠 Saka Keja</h1>
+        <p class="subtitle">Sign in to your account</p>
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email address" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <button type="submit">🔑 Sign In</button>
+        </form>
+        <div id="loginError" class="error-msg"></div>
+        <div id="loginSuccess" class="success-msg"></div>
+        <div class="toggle-link">
+            Don't have an account? <a href="register.html">Create one here</a>
+        </div>
+        <div class="toggle-link" style="margin-top:4px;">
+            <a href="index.html">⬅️ Back to home</a>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCTekqCGBPIjxTK8iMm0gxLqX5JkhJndi4",
+            authDomain: "saka-keja-54ae6.firebaseapp.com",
+            projectId: "saka-keja-54ae6",
+            storageBucket: "saka-keja-54ae6.firebasestorage.app",
+            messagingSenderId: "333792304442",
+            appId: "1:333792304442:web:f316912480457b863c0403"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Redirect if already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = 'index.html';
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            const successDiv = document.getElementById('loginSuccess');
+            errorDiv.textContent = '';
+            successDiv.textContent = '';
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                successDiv.textContent = '✅ Sign in successful! Redirecting...';
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+            } catch (err) {
+                errorDiv.textContent = '❌ ' + err.message;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Saka Keja - Find Rental Houses</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        /* ===== RESET & FONTS ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* ===== LOADER ===== */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #loader .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #1a73e8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #loader p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* ===== LANDING PAGE ===== */
+        #landing {
+            display: none;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 24px 60px;
+            animation: fadeUp 0.6s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== HEADER / NAV ===== */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1a73e8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .navbar .logo span {
+            color: #0f9d58;
+        }
+
+        .navbar .nav-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #1a73e8;
+            border: 2px solid #1a73e8;
+        }
+
+        .btn-outline:hover {
+            background: #e8f0fe;
+        }
+
+        .btn-primary {
+            background: #1a73e8;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #1557b0;
+        }
+
+        .btn-success {
+            background: #0f9d58;
+            color: #ffffff;
+        }
+
+        .btn-success:hover {
+            background: #0b7e46;
+        }
+
+        .btn-dashboard {
+            background: #0f9d58;
+            color: #ffffff;
+        }
+
+        .btn-dashboard:hover {
+            background: #0b7e46;
+        }
+
+        .btn-logout {
+            background: #d93025;
+            color: #ffffff;
+        }
+
+        .btn-logout:hover {
+            background: #b71c1c;
+        }
+
+        /* ===== USER STATUS BADGE ===== */
+        .user-status {
+            background: #f1f5f9;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-status .logged-in {
+            color: #0f9d58;
+            font-weight: 600;
+        }
+
+        .user-status .logged-out {
+            color: #d93025;
+            font-weight: 600;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            padding: 20px 0 40px;
+        }
+
+        .hero-text h1 {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #0f172a;
+        }
+
+        .hero-text h1 .highlight {
+            color: #1a73e8;
+        }
+
+        .hero-text h1 .highlight-green {
+            color: #0f9d58;
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            color: #475569;
+            margin: 16px 0 28px;
+            max-width: 480px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .hero-buttons .btn {
+            padding: 14px 36px;
+            font-size: 16px;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image .illustration {
+            background: linear-gradient(135deg, #e8f0fe 0%, #d2e3fc 100%);
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .hero-image .illustration .icon {
+            font-size: 72px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .hero-image .illustration h3 {
+            font-size: 20px;
+            color: #1a73e8;
+        }
+
+        .hero-image .illustration p {
+            color: #475569;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .hero-image .illustration .map-preview {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .hero-image .illustration .map-preview .pin-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .hero-image .illustration .map-preview .pin-row:last-child {
+            border-bottom: none;
+        }
+
+        .hero-image .illustration .map-preview .pin {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #1a73e8;
+            flex-shrink: 0;
+        }
+
+        .hero-image .illustration .map-preview .pin.green {
+            background: #0f9d58;
+        }
+
+        .hero-image .illustration .map-preview .pin.orange {
+            background: #ff6d00;
+        }
+
+        .hero-image .illustration .map-preview .pin-text {
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .features {
+            padding: 40px 0 20px;
+        }
+
+        .features h2 {
+            font-size: 30px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .features .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 17px;
+            margin-bottom: 32px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-card .icon {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .feature-card h4 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* ===== CTA SECTION ===== */
+        .cta {
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+
+        .cta h2 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .cta p {
+            color: #475569;
+            font-size: 16px;
+            margin: 8px 0 24px;
+        }
+
+        .cta .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .cta .btn-group .btn {
+            padding: 14px 40px;
+            font-size: 16px;
+            min-width: 140px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 24px 0 8px;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 20px;
+        }
+
+        .footer p {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media screen and (max-width: 820px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 10px 0 20px;
+            }
+
+            .hero-text p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-image .illustration {
+                max-width: 100%;
+            }
+
+            .navbar {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 32px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            #landing {
+                padding: 12px 16px 40px;
+            }
+
+            .hero-text h1 {
+                font-size: 26px;
+            }
+
+            .hero-text p {
+                font-size: 15px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .navbar .logo {
+                font-size: 20px;
+            }
+
+            .navbar .nav-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== LOADER ===== -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <p>Loading Saka Keja...</p>
+    </div>
+
+    <!-- ===== LANDING PAGE ===== -->
+    <div id="landing">
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo">
+                🏠 Saka<span>Keja</span>
+            </div>
+            <div class="nav-actions">
+                <!-- User Status Badge -->
+                <span class="user-status" id="userStatus">
+                    🔄 Checking...
+                </span>
+                <!-- Buttons will be dynamically updated by JavaScript -->
+                <div id="navButtons">
+                    <a href="login.html" class="btn btn-outline" id="signInBtn">Sign In</a>
+                    <a href="register.html" class="btn btn-primary" id="getStartedBtn">Get Started</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-text">
+                <h1>
+                    Find Your<br />
+                    <span class="highlight">Dream Home</span> in<br />
+                    <span class="highlight-green">Nairobi &amp; Kiambu</span>
+                </h1>
+                <p>
+                    Saka Keja helps you find verified rental houses on an interactive map.
+                    Landlords list their properties — tenants find their next home.
+                </p>
+                <div class="hero-buttons" id="heroButtons">
+                    <a href="register.html" class="btn btn-success" id="heroRegisterBtn">👤 Create Account</a>
+                    <a href="login.html" class="btn btn-outline" id="heroLoginBtn">🔑 Sign In</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="illustration">
+                    <span class="icon">📍</span>
+                    <h3>Houses on the Map</h3>
+                    <p>See available rentals in your area</p>
+                    <div class="map-preview">
+                        <div class="pin-row">
+                            <span class="pin"></span>
+                            <span class="pin-text">🏠 2BR Apartment — Ruaka — KSh 25,000</span>
+                        </div>
+                        <div class="pin-row">
+                            <span class="pin green"></span>
+                            <span class="pin-text">🏠 Bedsitter — Donholm — KSh 15,000</span>
+                        </div>
+                        <div class="pin-row">
+                            <span class="pin orange"></span>
+                            <span class="pin-text">🏠 3BR House — Kilimani — KSh 45,000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <h2>Why Use Saka Keja?</h2>
+            <p class="subtitle">The simplest way to find or list rental houses in Nairobi and Kiambu</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="icon">🗺️</span>
+                    <h4>Interactive Map</h4>
+                    <p>View all available houses on a live map. Click any pin to see details.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">✅</span>
+                    <h4>Verified Listings</h4>
+                    <p>All houses are verified by the team. No fake listings — only real houses.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">📍</span>
+                    <h4>Find Near Me</h4>
+                    <p>Use GPS to see houses closest to your current location instantly.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="icon">🏠</span>
+                    <h4>For Landlords</h4>
+                    <p>List your property for free. Edit or delete your listings anytime.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="cta">
+            <h2>Ready to Find Your Next Home?</h2>
+            <p>Join hundreds of tenants and landlords using Saka Keja today.</p>
+            <div class="btn-group" id="ctaButtons">
+                <a href="register.html" class="btn btn-success" id="ctaRegisterBtn">👤 Create Free Account</a>
+                <a href="login.html" class="btn btn-outline" id="ctaLoginBtn">🔑 Sign In</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 Saka Keja. Built for Kenya.</p>
+        </footer>
+    </div>
+
+    <script>
+        // ==============================================================
+        // FIREBASE CONFIG
+        // ==============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCTekqCGBPIjxTK8iMm0gxLqX5JkhJndi4",
+            authDomain: "saka-keja-54ae6.firebaseapp.com",
+            projectId: "saka-keja-54ae6",
+            storageBucket: "saka-keja-54ae6.firebasestorage.app",
+            messagingSenderId: "333792304442",
+            appId: "1:333792304442:web:f316912480457b863c0403"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ==============================================================
+        // DOM REFERENCES
+        // ==============================================================
+        const userStatus = document.getElementById('userStatus');
+        const navButtons = document.getElementById('navButtons');
+        const heroButtons = document.getElementById('heroButtons');
+        const ctaButtons = document.getElementById('ctaButtons');
+
+        // ==============================================================
+        // HELPER: Navigate to Dashboard with Error Handling
+        // ==============================================================
+        async function goToDashboard() {
+            const user = auth.currentUser;
+            console.log('🔍 goToDashboard() called. User:', user ? user.email : 'null');
+
+            if (!user) {
+                alert('❌ You are not logged in. Please log in first.');
+                console.warn('⚠️ No user logged in.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            console.log('📄 Fetching user document for UID:', user.uid);
+
+            try {
+                const doc = await db.collection('users').doc(user.uid).get();
+                console.log('📄 Document exists:', doc.exists);
+
+                if (!doc.exists) {
+                    alert('❌ Your user profile is missing in the database.\n\n' +
+                          'Please go to Register and create a new account, or contact support.\n\n' +
+                          'UID: ' + user.uid);
+                    console.error('❌ User document missing for UID:', user.uid);
+                    return;
+                }
+
+                const data = doc.data();
+                console.log('📄 User data:', data);
+
+                if (!data.role) {
+                    alert('❌ Your user role is missing.\n\n' +
+                          'Your profile needs a "role" field (either "tenant" or "landlord").\n\n' +
+                          'Please contact support to fix this.\n\n' +
+                          'Data received: ' + JSON.stringify(data, null, 2));
+                    console.error('❌ Role field missing in user data:', data);
+                    return;
+                }
+
+                const role = data.role;
+                const redirectUrl = role === 'landlord' ? 'landlord.html' : 'tenant.html';
+                console.log('✅ Redirecting to:', redirectUrl, 'with role:', role);
+                window.location.href = redirectUrl;
+
+            } catch (err) {
+                console.error('❌ Error fetching user role:', err);
+                alert('❌ Error loading your profile: ' + err.message + '\n\nPlease check the console (F12) for details.');
+            }
+        }
+
+        // ==============================================================
+        // HELPER: Logout
+        // ==============================================================
+        async function logoutUser() {
+            try {
+                await auth.signOut();
+                window.location.href = 'index.html';
+            } catch (err) {
+                console.error('Logout error:', err);
+                alert('Logout error: ' + err.message);
+            }
+        }
+
+        // ==============================================================
+        // AUTH CHECK - SHOW STATUS ONLY (NO AUTOMATIC REDIRECT)
+        // ==============================================================
+        auth.onAuthStateChanged(async (user) => {
+            // Hide loader, show landing page
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('landing').style.display = 'block';
+
+            if (user) {
+                // ===== USER IS LOGGED IN =====
+                userStatus.innerHTML = '✅ <span class="logged-in">Logged in as ' + user.email + '</span>';
+
+                // Navbar buttons: Show Dashboard + Logout
+                navButtons.innerHTML = `
+                    <button class="btn btn-logout" id="logoutBtnNav">🚪 Logout</button>
+                    <button class="btn btn-dashboard" id="dashboardBtnNav">🚀 Dashboard</button>
+                `;
+                document.getElementById('logoutBtnNav').addEventListener('click', logoutUser);
+                document.getElementById('dashboardBtnNav').addEventListener('click', goToDashboard);
+
+                // Hero buttons: Show Dashboard only
+                heroButtons.innerHTML = `
+                    <button class="btn btn-dashboard" id="dashboardBtnHero" style="font-size:16px; padding:14px 36px;">🚀 Go to Dashboard</button>
+                `;
+                document.getElementById('dashboardBtnHero').addEventListener('click', goToDashboard);
+
+                // CTA buttons: Show Dashboard only
+                ctaButtons.innerHTML = `
+                    <button class="btn btn-dashboard" id="dashboardBtnCta" style="font-size:16px; padding:14px 40px;">🚀 Go to Dashboard</button>
+                `;
+                document.getElementById('dashboardBtnCta').addEventListener('click', goToDashboard);
+
+            } else {
+                // ===== USER IS NOT LOGGED IN =====
+                userStatus.innerHTML = '🔴 <span class="logged-out">Not logged in</span>';
+
+                // Navbar buttons: Show Sign In + Get Started
+                navButtons.innerHTML = `
+                    <a href="login.html" class="btn btn-outline">Sign In</a>
+                    <a href="register.html" class="btn btn-primary">Get Started</a>
+                `;
+
+                // Hero buttons: Show Create Account + Sign In
+                heroButtons.innerHTML = `
+                    <a href="register.html" class="btn btn-success" style="font-size:16px; padding:14px 36px;">👤 Create Account</a>
+                    <a href="login.html" class="btn btn-outline" style="font-size:16px; padding:14px 36px;">🔑 Sign In</a>
+                `;
+
+                // CTA buttons: Show Create Account + Sign In
+                ctaButtons.innerHTML = `
+                    <a href="register.html" class="btn btn-success" style="font-size:16px; padding:14px 40px;">👤 Create Free Account</a>
+                    <a href="login.html" class="btn btn-outline" style="font-size:16px; padding:14px 40px;">🔑 Sign In</a>
+                `;
+            }
+        });
+
+        // ==============================================================
+        // SHOW LANDING PAGE IF AUTH CHECK TAKES TOO LONG
+        // ==============================================================
+        setTimeout(() => {
+            const landing = document.getElementById('landing');
+            if (landing.style.display === 'none' || landing.style.display === '') {
+                document.getElementById('loader').style.display = 'none';
+                landing.style.display = 'block';
+            }
+        }, 3000);
+
+        console.log('✅ Saka Keja Landing Page loaded!');
+    </script>
+
+</body>
+</html>
