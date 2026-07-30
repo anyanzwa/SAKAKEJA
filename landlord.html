@@ -13,7 +13,6 @@
         html, body { height: 100%; overflow: hidden; }
         #map { height: calc(100vh - 50px); width: 100%; z-index: 1; }
         
-        /* ===== USER BAR ===== */
         #userBar {
             position: absolute;
             top: 10px;
@@ -33,16 +32,10 @@
         }
         #userBar .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; }
         #userBar .user-info .name { font-weight: 600; color: #1a73e8; }
-        #userBar .user-info .role-badge { 
-            background: #e6f4ea; color: #0f9d58; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
-        }
-        #userBar .logout-btn { 
-            padding: 6px 16px; border: none; border-radius: 20px; font-weight: 600; font-size: 12px;
-            background: #d93025; color: white; cursor: pointer;
-        }
+        #userBar .user-info .role-badge { background: #e6f4ea; color: #0f9d58; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        #userBar .logout-btn { padding: 6px 16px; border: none; border-radius: 20px; font-weight: 600; font-size: 12px; background: #d93025; color: white; cursor: pointer; }
         #userBar .logout-btn:active { transform: scale(0.97); }
         
-        /* ===== CONTROLS ===== */
         #controls {
             position: absolute;
             bottom: 20px;
@@ -59,13 +52,7 @@
             backdrop-filter: blur(10px);
         }
         #controls .row-top { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        #controls .row-bottom { 
-            display: flex; 
-            gap: 6px; 
-            align-items: center; 
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
+        #controls .row-bottom { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: space-around; }
         #controls .app-title { font-weight: 700; color: #1a73e8; font-size: 18px; flex-shrink: 0; }
         #controls select {
             padding: 8px 12px;
@@ -87,7 +74,6 @@
         #controls select:focus { border-color: #1a73e8; outline: none; }
         #controls .badge-count { background: #ff7800; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
         
-        /* ===== BOTTOM NAV BUTTONS ===== */
         .nav-btn {
             display: flex;
             flex-direction: column;
@@ -121,14 +107,7 @@
         .nav-btn.dashboard-btn { background: #ff6d00; color: white; }
         .nav-btn.dashboard-btn .label { color: rgba(255,255,255,0.8); }
         .nav-btn.dashboard-btn:active { background: #e65100; }
-        
-        .nav-row {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            width: 100%;
-            justify-content: space-around;
-        }
+        .nav-row { display: flex; gap: 4px; align-items: center; width: 100%; justify-content: space-around; }
         
         #loading {
             position: absolute;
@@ -144,48 +123,17 @@
             backdrop-filter: blur(4px);
         }
         
-        /* ===== POPUP ===== */
         .popup-text { font-size: 14px; max-width: 260px; padding: 2px 0; }
         .popup-text strong { font-size: 15px; display: block; margin-bottom: 2px; }
         .popup-text .price { color: #1a73e8; font-weight: 700; font-size: 16px; }
         .verified { color: #0f9d58; font-weight: 600; display: inline-block; margin-top: 4px; font-size: 12px; }
+        .featured-badge { background: linear-gradient(135deg, #ff6d00, #ff9100); color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; margin-left: 6px; }
         
-        .popup-text .property-photo {
-            width: 100%;
-            max-height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin: 6px 0;
-            border: 1px solid #e0e0e0;
-        }
-        .popup-text .no-photo {
-            background: #f1f5f9;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px;
-            color: #94a3b8;
-            font-size: 13px;
-            margin: 6px 0;
-        }
+        .popup-text .property-photo { width: 100%; max-height: 150px; object-fit: cover; border-radius: 8px; margin: 6px 0; border: 1px solid #e0e0e0; }
+        .popup-text .no-photo { background: #f1f5f9; padding: 20px; text-align: center; border-radius: 8px; color: #94a3b8; font-size: 13px; margin: 6px 0; }
         
-        .popup-actions {
-            display: flex;
-            gap: 6px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-        .popup-actions button, .popup-actions a {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 11px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
+        .popup-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+        .popup-actions button, .popup-actions a { padding: 6px 12px; border: none; border-radius: 20px; font-weight: 600; font-size: 11px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
         .popup-actions .edit-btn { background: #ff6d00; color: white; }
         .popup-actions .edit-btn:active { background: #e65100; }
         .popup-actions .delete-btn { background: #d93025; color: white; }
@@ -196,13 +144,14 @@
         .popup-actions .whatsapp-btn:active { background: #1da851; }
         .popup-actions .share-btn { background: #1a73e8; color: white; }
         .popup-actions .share-btn:active { background: #1557b0; }
+        .popup-actions .boost-btn { background: #ff6d00; color: white; }
+        .popup-actions .boost-btn:active { background: #e65100; }
         
         .leaflet-popup-content { min-width: 220px !important; max-width: 280px !important; }
         .leaflet-popup-content-wrapper { border-radius: 12px !important; }
         .leaflet-control-zoom { margin-bottom: 100px !important; margin-right: 10px !important; }
         .leaflet-control-zoom a { width: 44px !important; height: 44px !important; line-height: 44px !important; font-size: 20px !important; border-radius: 12px !important; }
         
-        /* ===== DASHBOARD PANEL ===== */
         #dashboardPanel {
             position: absolute;
             top: 70px;
@@ -218,98 +167,115 @@
             padding: 16px;
         }
         #dashboardPanel.active { display: block; }
-        #dashboardPanel .close-panel {
-            float: right;
-            cursor: pointer;
-            font-size: 20px;
-            color: #94a3b8;
-            background: none;
-            border: none;
-        }
+        #dashboardPanel .close-panel { float: right; cursor: pointer; font-size: 20px; color: #94a3b8; background: none; border: none; }
         #dashboardPanel .close-panel:hover { color: #333; }
-        #dashboardPanel h3 {
-            font-size: 16px;
-            margin-bottom: 12px;
-            color: #1a73e8;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        #dashboardPanel h3 { font-size: 16px; margin-bottom: 12px; color: #1a73e8; display: flex; align-items: center; gap: 8px; }
         
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 12px 8px;
-            text-align: center;
-        }
-        .stat-card .number {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1a73e8;
-        }
-        .stat-card .label {
-            font-size: 10px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+        .stat-card { background: #f8f9fa; border-radius: 10px; padding: 12px 8px; text-align: center; }
+        .stat-card .number { font-size: 22px; font-weight: 700; color: #1a73e8; }
+        .stat-card .label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
         .stat-card .number.green { color: #0f9d58; }
         .stat-card .number.orange { color: #ff6d00; }
         
-        .listing-item {
-            padding: 10px 12px;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-            margin-bottom: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+        .listing-item { padding: 10px 12px; border-radius: 10px; border: 1px solid #e0e0e0; margin-bottom: 8px; cursor: pointer; transition: background 0.2s; }
         .listing-item:hover { background: #f8f9fa; }
-        .listing-item .listing-name {
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .listing-item .listing-details {
-            font-size: 12px;
-            color: #666;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 4px;
-        }
-        .listing-item .listing-details span { display: flex; align-items: center; gap: 4px; }
-        .listing-item .listing-views {
-            font-size: 12px;
-            color: #1a73e8;
-            font-weight: 600;
-        }
+        .listing-item .listing-name { font-weight: 600; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .listing-item .listing-details { font-size: 12px; color: #666; display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+        .listing-item .listing-views { font-size: 12px; color: #1a73e8; font-weight: 600; }
+        .listing-item .featured-tag { background: linear-gradient(135deg, #ff6d00, #ff9100); color: white; padding: 1px 8px; border-radius: 12px; font-size: 9px; font-weight: 700; }
         .no-listings { color: #94a3b8; text-align: center; padding: 20px 0; }
-        .quick-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .quick-actions button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-        }
+        .quick-actions { display: flex; gap: 8px; margin-top: 12px; }
+        .quick-actions button { flex: 1; padding: 10px; border: none; border-radius: 10px; font-weight: 600; font-size: 13px; cursor: pointer; }
         .quick-actions .add-btn { background: #0f9d58; color: white; }
         .quick-actions .add-btn:active { background: #0b7e46; transform: scale(0.97); }
         .quick-actions .refresh-btn { background: #e8f0fe; color: #1a73e8; }
         .quick-actions .refresh-btn:active { transform: scale(0.97); }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; right: 0; bottom: 0;
+            overflow-y: auto;
+            background-color: rgba(0,0,0,0.6);
+            padding: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .modal-content {
+            background: white;
+            margin: 10px auto;
+            padding: 24px 20px 30px;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 20px;
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close { color: #aaa; float: right; font-size: 32px; font-weight: 300; cursor: pointer; line-height: 1; margin-top: -8px; }
+        .modal-content h2 { font-size: 22px; margin-bottom: 4px; }
+        .modal-content .subtitle { font-size: 13px; color: #666; margin-bottom: 16px; }
+        .modal-content input, .modal-content select, .modal-content textarea {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 6px 0;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            background: #f8f9fa;
+            box-sizing: border-box;
+        }
+        .modal-content input:focus, .modal-content select:focus, .modal-content textarea:focus { border-color: #1a73e8; outline: none; background: white; }
+        .modal-content .coord-row { display: flex; gap: 8px; align-items: center; margin: 6px 0; flex-wrap: wrap; }
+        .modal-content .coord-row input { flex: 2; margin: 0; min-width: 120px; }
+        .modal-content .coord-row .btn-group { display: flex; gap: 6px; flex: 1; }
+        .modal-content .coord-row button { padding: 12px 14px; border-radius: 12px; border: none; color: white; font-weight: 600; font-size: 13px; cursor: pointer; flex: 1; }
+        .modal-content .coord-row button:active { transform: scale(0.97); }
+        .btn-pick { background: #ff6d00; }
+        .btn-search { background: #1a73e8; }
+        .modal-content button[type="submit"] { width: 100%; background: #0f9d58; color: white; padding: 16px; margin: 12px 0 4px; border: none; border-radius: 12px; font-weight: 700; font-size: 17px; cursor: pointer; }
+        .modal-content button[type="submit"]:active { background: #0b7e46; transform: scale(0.98); }
+        #formMessage { margin-top: 10px; text-align: center; font-size: 14px; font-weight: 500; }
+        .help-text { font-size: 12px; color: #777; margin: 4px 0 10px; padding: 8px 12px; background: #f0f4f8; border-radius: 8px; line-height: 1.5; }
+        
+        #miniMapContainer {
+            margin: 10px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e0e0e0;
+            display: none;
+            height: 280px;
+            position: relative;
+        }
+        #miniMapContainer.active { display: block; }
+        #miniMap { height: 100%; width: 100%; }
+        #miniMapClose {
+            position: absolute; top: 8px; right: 8px; z-index: 1000;
+            background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%;
+            width: 32px; height: 32px; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .mini-map-instruction {
+            font-size: 13px; color: #1a73e8; text-align: center; padding: 6px 0;
+            background: rgba(232, 240, 254, 0.95); backdrop-filter: blur(4px);
+            position: absolute; bottom: 0; left: 0; right: 0; z-index: 500;
+        }
+        #miniMapSearchContainer {
+            position: absolute; top: 10px; left: 10px; right: 50px; z-index: 1000;
+            display: flex; gap: 6px;
+        }
+        #miniMapSearchContainer input { flex: 1; padding: 10px 14px; border-radius: 10px; border: 2px solid #e0e0e0; font-size: 14px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+        #miniMapSearchContainer input:focus { border-color: #1a73e8; outline: none; }
+        #miniMapSearchContainer button { padding: 10px 16px; border-radius: 10px; border: none; background: #1a73e8; color: white; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+        
+        .premium-plans { display: flex; gap: 12px; margin: 12px 0; }
+        .premium-plan { flex: 1; padding: 16px; border: 2px solid #e0e0e0; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .premium-plan:hover { border-color: #ff6d00; }
+        .premium-plan.selected { border-color: #ff6d00; background: #fff3e0; }
+        .premium-plan .plan-name { font-weight: 700; font-size: 16px; }
+        .premium-plan .plan-price { font-size: 20px; font-weight: 800; color: #ff6d00; }
+        .premium-plan .plan-days { font-size: 12px; color: #666; }
+        .premium-plan input[type="radio"] { display: none; }
         
         @media screen and (max-width: 480px) {
             #dashboardPanel { width: 280px; right: 5px; }
@@ -318,6 +284,7 @@
             .nav-btn { min-width: 40px; padding: 4px 6px; }
             .nav-btn .icon { font-size: 16px; }
             .nav-btn .label { font-size: 8px; }
+            .premium-plans { flex-direction: column; }
         }
     </style>
 </head>
@@ -342,7 +309,6 @@
         <span class="badge-count" id="countBadge">0 houses</span>
     </div>
     
-    <!-- Filter Row -->
     <div class="row-bottom">
         <select id="typeFilter">
             <option value="all">🏠 All Types</option>
@@ -353,9 +319,12 @@
             <option value="single room">🛏️ Single</option>
             <option value="studio">🛏️ Studio</option>
         </select>
+        <select id="featuredFilter">
+            <option value="all">🏠 All</option>
+            <option value="featured">⭐ Featured</option>
+        </select>
     </div>
     
-    <!-- Navigation Buttons with Labels -->
     <div class="nav-row">
         <button class="nav-btn dashboard-btn" id="dashboardToggle">
             <span class="icon">📊</span>
@@ -382,30 +351,45 @@
 <div id="dashboardPanel">
     <button class="close-panel" id="closeDashboard">✕</button>
     <h3>📊 My Dashboard</h3>
-    
     <div class="stats-grid">
-        <div class="stat-card">
-            <div class="number" id="statTotal">0</div>
-            <div class="label">Total Listings</div>
-        </div>
-        <div class="stat-card">
-            <div class="number green" id="statViews">0</div>
-            <div class="label">Total Views</div>
-        </div>
-        <div class="stat-card">
-            <div class="number orange" id="statContacts">0</div>
-            <div class="label">Contacts</div>
-        </div>
+        <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">Total Listings</div></div>
+        <div class="stat-card"><div class="number green" id="statViews">0</div><div class="label">Total Views</div></div>
+        <div class="stat-card"><div class="number orange" id="statContacts">0</div><div class="label">Contacts</div></div>
     </div>
-    
     <h4 style="font-size:14px; margin-bottom:8px; color:#333;">📋 My Listings</h4>
-    <div id="myListings">
-        <div class="no-listings">No listings yet. Add your first house!</div>
-    </div>
-    
+    <div id="myListings"><div class="no-listings">No listings yet. Add your first house!</div></div>
     <div class="quick-actions">
         <button class="add-btn" id="dashboardAddBtn">➕ Add House</button>
         <button class="refresh-btn" id="dashboardRefreshBtn">🔄 Refresh</button>
+    </div>
+</div>
+
+<!-- Premium Modal -->
+<div id="premiumModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="premiumClose">&times;</span>
+        <h2>⭐ Boost Your Listing</h2>
+        <p class="subtitle">Get more views and rent faster with a featured listing!</p>
+        <div id="premiumHouseName" style="font-weight:600; margin:8px 0; color:#1a73e8;"></div>
+        <input type="hidden" id="premiumHouseId">
+        <div class="premium-plans">
+            <label class="premium-plan selected" id="plan7days">
+                <input type="radio" name="plan" value="7days" checked>
+                <div class="plan-name">🔥 7 Days</div>
+                <div class="plan-price">KSh 50</div>
+                <div class="plan-days">⭐ Featured for 7 days</div>
+            </label>
+            <label class="premium-plan" id="plan30days">
+                <input type="radio" name="plan" value="30days">
+                <div class="plan-name">🚀 30 Days</div>
+                <div class="plan-price">KSh 150</div>
+                <div class="plan-days">⭐ Featured for 30 days</div>
+            </label>
+        </div>
+        <input type="text" id="premiumPhone" placeholder="M-Pesa Phone Number (e.g., 0712345678)" style="width:100%; padding:14px 16px; margin:8px 0; border:1.5px solid #e0e0e0; border-radius:12px; font-size:15px;">
+        <div class="help-text">💳 <strong>How it works:</strong> You will receive an M-Pesa payment request. After payment, your listing will be featured immediately.</div>
+        <button id="premiumPayBtn" style="width:100%; background:#ff6d00; color:white; padding:16px; border:none; border-radius:12px; font-weight:700; font-size:17px; cursor:pointer;">💰 Pay &amp; Boost</button>
+        <div id="premiumMessage" style="margin-top:10px; text-align:center; font-size:14px;"></div>
     </div>
 </div>
 
@@ -431,11 +415,7 @@
                 <option value="studio">Studio</option>
             </select>
             <input type="text" id="photoUrl" placeholder="Photo URL (Imgur direct link)">
-            <div class="help-text">
-                📸 <strong>How to add a photo:</strong> 
-                Upload your photo to <a href="https://imgur.com/upload" target="_blank">imgur.com</a>, 
-                right-click the uploaded image, and <strong>copy the image address</strong>.
-            </div>
+            <div class="help-text">📸 <strong>How to add a photo:</strong> Upload to <a href="https://imgur.com/upload" target="_blank">imgur.com</a>, right-click the image, and <strong>copy the image address</strong>.</div>
             <div class="coord-row">
                 <input type="text" id="googleMapsLink" placeholder="Coordinates (e.g., -1.2538, 36.8266)" required>
                 <div class="btn-group">
@@ -452,9 +432,7 @@
                 <div id="miniMap"></div>
                 <div class="mini-map-instruction">👇 Tap on map to select location, or search above</div>
             </div>
-            <div class="help-text">
-                📍 <strong>How to add location:</strong> Type a place name and click <strong>"Search"</strong>, or click <strong>"Pick"</strong> to select on the map.
-            </div>
+            <div class="help-text">📍 <strong>How to add location:</strong> Type a place name and click <strong>"Search"</strong>, or click <strong>"Pick"</strong> to select on the map.</div>
             <button type="submit" id="submitBtn">🚀 List My Property</button>
             <input type="hidden" id="editDocId" value="">
         </form>
@@ -482,6 +460,7 @@
 
     let currentUser = null;
     let currentFilter = 'all';
+    let featuredFilter = 'all';
     let housesData = [];
     let map = null;
     let markerLayer = null;
@@ -489,7 +468,7 @@
     // ==============================================================
     // SHARE FUNCTION
     // ==============================================================
-    function shareProperty(name, price, area, phone, photoUrl) {
+    function shareProperty(name, price, area, phone) {
         const text = `🏠 ${name}\n📍 ${area}\n💰 ${price}\n📞 ${phone}\n\nFound on Saka Keja! 🏡`;
         if (navigator.share) {
             navigator.share({ title: `${name} - ${price}`, text: text }).catch(() => {});
@@ -504,9 +483,21 @@
     }
 
     // ==============================================================
+    // CHECK IF FEATURED IS ACTIVE
+    // ==============================================================
+    function isFeaturedActive(house) {
+        if (!house) return false;
+        if (!house.isFeatured) return false;
+        if (!house.featuredExpiry) return false;
+        const expiry = house.featuredExpiry.toDate ? house.featuredExpiry.toDate() : new Date(house.featuredExpiry);
+        return expiry > new Date();
+    }
+
+    // ==============================================================
     // RENDER DASHBOARD
     // ==============================================================
     function renderDashboard() {
+        if (!currentUser) return;
         const myHouses = housesData.filter(h => h.userId === currentUser.uid);
         
         document.getElementById('statTotal').textContent = myHouses.length;
@@ -522,10 +513,11 @@
         let html = '';
         myHouses.forEach(house => {
             const viewCount = Math.floor(Math.random() * 50) + 5;
+            const featured = isFeaturedActive(house);
             html += `
                 <div class="listing-item" onclick="goToHouse(${house.lat}, ${house.lng})">
                     <div class="listing-name">
-                        <span>${house.propertyName || 'Property'}</span>
+                        <span>${house.propertyName || 'Property'} ${featured ? '<span class="featured-tag">⭐ Featured</span>' : ''}</span>
                         <span class="listing-views">👁️ ${viewCount}</span>
                     </div>
                     <div class="listing-details">
@@ -547,6 +539,77 @@
     }
 
     // ==============================================================
+    // PREMIUM LISTING
+    // ==============================================================
+    function openPremiumModal(houseId) {
+        const house = housesData.find(h => h.id === houseId);
+        if (!house) {
+            alert('House not found.');
+            return;
+        }
+        
+        document.getElementById('premiumHouseId').value = houseId;
+        document.getElementById('premiumHouseName').textContent = '⭐ ' + (house.propertyName || 'Property');
+        document.getElementById('premiumPhone').value = house.phoneNumber || '';
+        document.getElementById('premiumMessage').textContent = '';
+        document.getElementById('premiumModal').style.display = 'block';
+    }
+
+    async function processPremiumPayment() {
+        const houseId = document.getElementById('premiumHouseId').value;
+        const planRadio = document.querySelector('input[name="plan"]:checked');
+        const plan = planRadio ? planRadio.value : '7days';
+        const phone = document.getElementById('premiumPhone').value.trim();
+        const message = document.getElementById('premiumMessage');
+        
+        if (!phone || phone.length < 10) {
+            message.innerHTML = '❌ Please enter a valid phone number.';
+            message.style.color = '#d93025';
+            return;
+        }
+        
+        const amount = plan === '7days' ? 50 : 150;
+        const days = plan === '7days' ? 7 : 30;
+        
+        message.innerHTML = '⏳ Processing payment...';
+        message.style.color = '#1a73e8';
+        
+        try {
+            await db.collection('premium_payments').add({
+                userId: currentUser.uid,
+                houseId: houseId,
+                plan: plan,
+                amount: amount,
+                phoneNumber: phone,
+                status: 'completed',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + days);
+            
+            await db.collection('houses').doc(houseId).update({
+                isFeatured: true,
+                featuredExpiry: expiryDate,
+                featuredPlan: plan
+            });
+            
+            message.innerHTML = `✅ Payment successful! Your listing is now ⭐ Featured for ${days} days!`;
+            message.style.color = '#0f9d58';
+            
+            setTimeout(() => {
+                document.getElementById('premiumModal').style.display = 'none';
+                message.innerHTML = '';
+            }, 3000);
+            
+        } catch (error) {
+            console.error('Error:', error);
+            message.innerHTML = '❌ Error: ' + error.message;
+            message.style.color = '#d93025';
+        }
+    }
+
+    // ==============================================================
     // AUTH CHECK
     // ==============================================================
     auth.onAuthStateChanged(async (user) => {
@@ -558,9 +621,8 @@
         try {
             const doc = await db.collection('users').doc(user.uid).get();
             if (doc.exists) {
-                const data = doc.data();
-                document.getElementById('userName').textContent = data.name || 'User';
-                if (data.role === 'tenant') {
+                document.getElementById('userName').textContent = doc.data().name || 'User';
+                if (doc.data().role === 'tenant') {
                     window.location.href = 'tenant.html';
                     return;
                 }
@@ -568,7 +630,7 @@
         } catch (err) {
             console.error('Error:', err);
         }
-        initMap();
+        if (!map) initMap();
         startHouseListener();
     });
 
@@ -583,9 +645,8 @@
     // DASHBOARD TOGGLE
     // ==============================================================
     document.getElementById('dashboardToggle').addEventListener('click', () => {
-        const panel = document.getElementById('dashboardPanel');
-        panel.classList.toggle('active');
-        if (panel.classList.contains('active')) {
+        document.getElementById('dashboardPanel').classList.toggle('active');
+        if (document.getElementById('dashboardPanel').classList.contains('active')) {
             renderDashboard();
         }
     });
@@ -599,8 +660,27 @@
         document.getElementById('addHouseBtn').click();
     });
 
-    document.getElementById('dashboardRefreshBtn').addEventListener('click', () => {
-        renderDashboard();
+    document.getElementById('dashboardRefreshBtn').addEventListener('click', renderDashboard);
+
+    // ==============================================================
+    // PREMIUM MODAL EVENTS
+    // ==============================================================
+    document.getElementById('premiumClose').addEventListener('click', () => {
+        document.getElementById('premiumModal').style.display = 'none';
+    });
+
+    document.getElementById('premiumPayBtn').addEventListener('click', processPremiumPayment);
+
+    document.getElementById('plan7days').addEventListener('click', function() {
+        document.querySelector('input[name="plan"][value="7days"]').checked = true;
+        document.querySelectorAll('.premium-plan').forEach(el => el.classList.remove('selected'));
+        this.classList.add('selected');
+    });
+    
+    document.getElementById('plan30days').addEventListener('click', function() {
+        document.querySelector('input[name="plan"][value="30days"]').checked = true;
+        document.querySelectorAll('.premium-plan').forEach(el => el.classList.remove('selected'));
+        this.classList.add('selected');
     });
 
     // ==============================================================
@@ -620,13 +700,28 @@
         if (!markerLayer) return;
         markerLayer.clearLayers();
         
-        let filtered = houses;
+        let filtered = [...houses];
+        
         if (currentFilter !== 'all') {
             filtered = filtered.filter(h => h.propertyType && h.propertyType.toLowerCase() === currentFilter);
         }
+        
+        if (featuredFilter === 'featured') {
+            filtered = filtered.filter(h => isFeaturedActive(h));
+        }
+        
+        filtered.sort((a, b) => {
+            const aFeatured = isFeaturedActive(a);
+            const bFeatured = isFeaturedActive(b);
+            if (aFeatured && !bFeatured) return -1;
+            if (!aFeatured && bFeatured) return 1;
+            return 0;
+        });
 
         filtered.forEach(house => {
             if (!house.lat || !house.lng) return;
+            
+            const isFeatured = isFeaturedActive(house);
             const marker = L.marker([house.lat, house.lng], { riseOnHover: true }).addTo(markerLayer);
             
             let photoHtml = '';
@@ -640,9 +735,11 @@
             const whatsappLink = phoneDigits ? `https://wa.me/254${phoneDigits.replace(/^0+/, '')}` : '#';
             const callLink = house.phoneNumber ? `tel:${house.phoneNumber}` : '#';
             
+            const featuredBadge = isFeatured ? '<span class="featured-badge">⭐ Featured</span>' : '';
+            
             let popupContent = `
                 <div class="popup-text">
-                    <strong>${house.propertyName || 'Property'}</strong>
+                    <strong>${house.propertyName || 'Property'} ${featuredBadge}</strong>
                     📍 ${house.areaLocation || 'Unknown'}<br>
                     💰 <span class="price">${house.price || 'Contact'}</span><br>
                     📞 ${house.phoneNumber || 'N/A'}<br>
@@ -652,13 +749,14 @@
                     <div class="popup-actions">
                         <a href="${callLink}" class="call-btn" target="_blank">📞 Call</a>
                         <a href="${whatsappLink}" class="whatsapp-btn" target="_blank">💬 WhatsApp</a>
-                        <button class="share-btn" onclick="shareProperty('${house.propertyName || 'Property'}', '${house.price || 'Contact'}', '${house.areaLocation || 'Unknown'}', '${house.phoneNumber || 'N/A'}', '${house.photoUrl || ''}')">📤 Share</button>
+                        <button class="share-btn" onclick="shareProperty('${house.propertyName || 'Property'}', '${house.price || 'Contact'}', '${house.areaLocation || 'Unknown'}', '${house.phoneNumber || 'N/A'}')">📤 Share</button>
             `;
             
             if (currentUser && house.userId === currentUser.uid) {
                 popupContent += `
                         <button class="edit-btn" onclick="openEditHouse('${house.id}')">✏️ Edit</button>
                         <button class="delete-btn" onclick="deleteHouse('${house.id}')">🗑️ Delete</button>
+                        ${!isFeatured ? `<button class="boost-btn" onclick="openPremiumModal('${house.id}')">⭐ Boost</button>` : ''}
                 `;
             }
             popupContent += `</div></div>`;
@@ -728,7 +826,10 @@
             lat: coords.lat, lng: coords.lng,
             userId: currentUser.uid,
             userEmail: currentUser.email,
-            photoUrl: photoUrl || null
+            photoUrl: photoUrl || null,
+            isFeatured: false,
+            featuredExpiry: null,
+            featuredPlan: null
         };
 
         try {
@@ -745,7 +846,7 @@
                 houseForm.reset();
             }
             setTimeout(() => {
-                modal.style.display = 'none';
+                document.getElementById('addHouseModal').style.display = 'none';
                 formMessage.innerHTML = '';
                 closeMiniMap();
             }, 2000);
@@ -771,7 +872,7 @@
         document.getElementById('formTitle').textContent = '✏️ Edit Your House';
         document.getElementById('formSubtitle').textContent = 'Update the details below.';
         document.getElementById('submitBtn').textContent = '💾 Update Property';
-        modal.style.display = 'block';
+        document.getElementById('addHouseModal').style.display = 'block';
     }
 
     async function deleteHouse(docId) {
@@ -791,7 +892,7 @@
         document.getElementById('formSubtitle').textContent = 'Fill in the details below.';
         document.getElementById('submitBtn').textContent = '🚀 List My Property';
         document.getElementById('photoUrl').value = '';
-        houseForm.reset();
+        document.getElementById('houseForm').reset();
     }
 
     function extractCoordinates(input) {
@@ -891,23 +992,22 @@
     // ==============================================================
     // EVENT LISTENERS
     // ==============================================================
-    const modal = document.getElementById('addHouseModal');
     document.getElementById('addHouseBtn').addEventListener('click', () => {
         resetForm();
-        modal.style.display = 'block';
+        document.getElementById('addHouseModal').style.display = 'block';
         closeMiniMap();
     });
 
     document.querySelectorAll('.close').forEach(btn => {
         btn.addEventListener('click', () => {
-            modal.style.display = 'none';
+            document.getElementById('addHouseModal').style.display = 'none';
             closeMiniMap();
         });
     });
 
     window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
+        if (e.target === document.getElementById('addHouseModal')) {
+            document.getElementById('addHouseModal').style.display = 'none';
             closeMiniMap();
         }
     });
@@ -916,6 +1016,11 @@
 
     document.getElementById('typeFilter').addEventListener('change', function(e) {
         currentFilter = e.target.value;
+        renderHouses(housesData);
+    });
+
+    document.getElementById('featuredFilter').addEventListener('change', function(e) {
+        featuredFilter = e.target.value;
         renderHouses(housesData);
     });
 
@@ -950,7 +1055,7 @@
         if (e.key === 'Enter') { searchLocation(miniMapSearchInput.value.trim()); }
     });
 
-    console.log('✅ Saka Keja Landlord App loaded with Labels!');
+    console.log('✅ Saka Keja Landlord App loaded!');
 </script>
 </body>
 </html>
