@@ -4,10 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Saka Keja - Find Rental Houses</title>
+    
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <style>
         /* ===== RESET & FONTS ===== */
         * {
@@ -23,6 +25,112 @@
             line-height: 1.6;
         }
 
+        /* ===== TOAST NOTIFICATIONS ===== */
+        #toastContainer {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            pointer-events: none;
+            max-width: 90%;
+        }
+
+        .toast {
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            animation: toastIn 0.4s ease-out;
+            pointer-events: auto;
+            text-align: center;
+            max-width: 400px;
+            backdrop-filter: blur(8px);
+        }
+
+        .toast.success {
+            background: #0f9d58;
+        }
+        .toast.error {
+            background: #d93025;
+        }
+        .toast.info {
+            background: #1a73e8;
+        }
+        .toast.warning {
+            background: #ff6d00;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .toast.hide {
+            animation: toastOut 0.3s ease-in forwards;
+        }
+
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+        }
+
+        /* ===== LOADING OVERLAY ===== */
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #loadingOverlay .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #fff;
+            border-top-color: #1a73e8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        #loadingOverlay p {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         /* ===== LOADER ===== */
         #loader {
             position: fixed;
@@ -34,7 +142,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
+            z-index: 9998;
             flex-direction: column;
             gap: 16px;
         }
@@ -46,12 +154,6 @@
             border-top-color: #1a73e8;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
         }
 
         #loader p {
@@ -169,6 +271,15 @@
         }
 
         .btn-logout:hover {
+            background: #b71c1c;
+        }
+
+        .btn-danger {
+            background: #d93025;
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
             background: #b71c1c;
         }
 
@@ -415,26 +526,21 @@
                 text-align: center;
                 padding: 10px 0 20px;
             }
-
             .hero-text p {
                 margin-left: auto;
                 margin-right: auto;
             }
-
             .hero-buttons {
                 justify-content: center;
             }
-
             .hero-image .illustration {
                 max-width: 100%;
             }
-
             .navbar {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
             }
-
             .hero-text h1 {
                 font-size: 32px;
             }
@@ -444,28 +550,22 @@
             #landing {
                 padding: 12px 16px 40px;
             }
-
             .hero-text h1 {
                 font-size: 26px;
             }
-
             .hero-text p {
                 font-size: 15px;
             }
-
             .features-grid {
                 grid-template-columns: 1fr;
             }
-
             .btn {
                 padding: 10px 20px;
                 font-size: 14px;
             }
-
             .navbar .logo {
                 font-size: 20px;
             }
-
             .navbar .nav-actions {
                 justify-content: center;
             }
@@ -473,6 +573,15 @@
     </style>
 </head>
 <body>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toastContainer"></div>
+
+    <!-- ===== LOADING OVERLAY ===== -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <p id="loadingText">Loading...</p>
+    </div>
 
     <!-- ===== LOADER ===== -->
     <div id="loader">
@@ -489,11 +598,7 @@
                 🏠 Saka<span>Keja</span>
             </div>
             <div class="nav-actions">
-                <!-- User Status Badge -->
-                <span class="user-status" id="userStatus">
-                    🔄 Checking...
-                </span>
-                <!-- Buttons will be dynamically updated by JavaScript -->
+                <span class="user-status" id="userStatus">🔄 Checking...</span>
                 <div id="navButtons">
                     <a href="login.html" class="btn btn-outline" id="signInBtn">Sign In</a>
                     <a href="register.html" class="btn btn-primary" id="getStartedBtn">Get Started</a>
@@ -603,6 +708,49 @@
         const db = firebase.firestore();
 
         // ==============================================================
+        // TOAST NOTIFICATIONS
+        // ==============================================================
+        function showToast(message, type = 'info', duration = 3000) {
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 300);
+            }, duration);
+        }
+
+        function toastSuccess(msg) { showToast(msg, 'success'); }
+        function toastError(msg) { showToast(msg, 'error'); }
+        function toastInfo(msg) { showToast(msg, 'info'); }
+        function toastWarning(msg) { showToast(msg, 'warning'); }
+
+        // ==============================================================
+        // LOADING STATES
+        // ==============================================================
+        function showLoading(text = 'Loading...') {
+            const overlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            loadingText.textContent = text;
+            overlay.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // ==============================================================
         // DOM REFERENCES
         // ==============================================================
         const userStatus = document.getElementById('userStatus');
@@ -611,53 +759,43 @@
         const ctaButtons = document.getElementById('ctaButtons');
 
         // ==============================================================
-        // HELPER: Navigate to Dashboard with Error Handling
+        // HELPER: Navigate to Dashboard
         // ==============================================================
         async function goToDashboard() {
             const user = auth.currentUser;
-            console.log('🔍 goToDashboard() called. User:', user ? user.email : 'null');
-
             if (!user) {
-                alert('❌ You are not logged in. Please log in first.');
-                console.warn('⚠️ No user logged in.');
+                toastWarning('Please log in first.');
                 window.location.href = 'login.html';
                 return;
             }
 
-            console.log('📄 Fetching user document for UID:', user.uid);
+            showLoading('Loading your dashboard...');
 
             try {
                 const doc = await db.collection('users').doc(user.uid).get();
-                console.log('📄 Document exists:', doc.exists);
-
                 if (!doc.exists) {
-                    alert('❌ Your user profile is missing in the database.\n\n' +
-                          'Please go to Register and create a new account, or contact support.\n\n' +
-                          'UID: ' + user.uid);
-                    console.error('❌ User document missing for UID:', user.uid);
+                    hideLoading();
+                    toastError('User profile not found. Please register again.');
                     return;
                 }
 
                 const data = doc.data();
-                console.log('📄 User data:', data);
-
                 if (!data.role) {
-                    alert('❌ Your user role is missing.\n\n' +
-                          'Your profile needs a "role" field (either "tenant" or "landlord").\n\n' +
-                          'Please contact support to fix this.\n\n' +
-                          'Data received: ' + JSON.stringify(data, null, 2));
-                    console.error('❌ Role field missing in user data:', data);
+                    hideLoading();
+                    toastError('User role missing. Please contact support.');
                     return;
                 }
 
                 const role = data.role;
                 const redirectUrl = role === 'landlord' ? 'landlord.html' : 'tenant.html';
-                console.log('✅ Redirecting to:', redirectUrl, 'with role:', role);
-                window.location.href = redirectUrl;
-
+                hideLoading();
+                toastSuccess(`Welcome back, ${data.name || 'User'}!`);
+                setTimeout(() => {
+                    window.location.href = redirectUrl;
+                }, 500);
             } catch (err) {
-                console.error('❌ Error fetching user role:', err);
-                alert('❌ Error loading your profile: ' + err.message + '\n\nPlease check the console (F12) for details.');
+                hideLoading();
+                toastError('Error loading profile: ' + err.message);
             }
         }
 
@@ -667,15 +805,17 @@
         async function logoutUser() {
             try {
                 await auth.signOut();
-                window.location.href = 'index.html';
+                toastSuccess('Logged out successfully!');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
             } catch (err) {
-                console.error('Logout error:', err);
-                alert('Logout error: ' + err.message);
+                toastError('Logout error: ' + err.message);
             }
         }
 
         // ==============================================================
-        // AUTH CHECK - SHOW STATUS ONLY (NO AUTOMATIC REDIRECT)
+        // AUTH CHECK
         // ==============================================================
         auth.onAuthStateChanged(async (user) => {
             // Hide loader, show landing page
@@ -683,46 +823,49 @@
             document.getElementById('landing').style.display = 'block';
 
             if (user) {
-                // ===== USER IS LOGGED IN =====
-                userStatus.innerHTML = '✅ <span class="logged-in">Logged in as ' + user.email + '</span>';
+                // Get user name
+                let userName = 'User';
+                try {
+                    const doc = await db.collection('users').doc(user.uid).get();
+                    if (doc.exists) {
+                        userName = doc.data().name || 'User';
+                    }
+                } catch (err) {
+                    console.error('Error getting user name:', err);
+                }
 
-                // Navbar buttons: Show Dashboard + Logout
+                userStatus.innerHTML = `✅ <span class="logged-in">Welcome, ${userName}</span>`;
+
                 navButtons.innerHTML = `
-                    <button class="btn btn-logout" id="logoutBtnNav">🚪 Logout</button>
+                    <button class="btn btn-danger" id="logoutBtnNav">🚪 Logout</button>
                     <button class="btn btn-dashboard" id="dashboardBtnNav">🚀 Dashboard</button>
                 `;
                 document.getElementById('logoutBtnNav').addEventListener('click', logoutUser);
                 document.getElementById('dashboardBtnNav').addEventListener('click', goToDashboard);
 
-                // Hero buttons: Show Dashboard only
                 heroButtons.innerHTML = `
                     <button class="btn btn-dashboard" id="dashboardBtnHero" style="font-size:16px; padding:14px 36px;">🚀 Go to Dashboard</button>
                 `;
                 document.getElementById('dashboardBtnHero').addEventListener('click', goToDashboard);
 
-                // CTA buttons: Show Dashboard only
                 ctaButtons.innerHTML = `
                     <button class="btn btn-dashboard" id="dashboardBtnCta" style="font-size:16px; padding:14px 40px;">🚀 Go to Dashboard</button>
                 `;
                 document.getElementById('dashboardBtnCta').addEventListener('click', goToDashboard);
 
             } else {
-                // ===== USER IS NOT LOGGED IN =====
                 userStatus.innerHTML = '🔴 <span class="logged-out">Not logged in</span>';
 
-                // Navbar buttons: Show Sign In + Get Started
                 navButtons.innerHTML = `
                     <a href="login.html" class="btn btn-outline">Sign In</a>
                     <a href="register.html" class="btn btn-primary">Get Started</a>
                 `;
 
-                // Hero buttons: Show Create Account + Sign In
                 heroButtons.innerHTML = `
                     <a href="register.html" class="btn btn-success" style="font-size:16px; padding:14px 36px;">👤 Create Account</a>
                     <a href="login.html" class="btn btn-outline" style="font-size:16px; padding:14px 36px;">🔑 Sign In</a>
                 `;
 
-                // CTA buttons: Show Create Account + Sign In
                 ctaButtons.innerHTML = `
                     <a href="register.html" class="btn btn-success" style="font-size:16px; padding:14px 40px;">👤 Create Free Account</a>
                     <a href="login.html" class="btn btn-outline" style="font-size:16px; padding:14px 40px;">🔑 Sign In</a>

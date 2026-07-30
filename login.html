@@ -4,8 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Login - Saka Keja</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+        }
+        
         body { 
             height: 100vh; 
             display: flex; 
@@ -14,6 +26,92 @@
             background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
             padding: 20px;
         }
+        
+        /* ===== TOAST NOTIFICATIONS ===== */
+        #toastContainer {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            pointer-events: none;
+            max-width: 90%;
+        }
+
+        .toast {
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            animation: toastIn 0.4s ease-out;
+            pointer-events: auto;
+            text-align: center;
+            max-width: 400px;
+            backdrop-filter: blur(8px);
+        }
+
+        .toast.success { background: #0f9d58; }
+        .toast.error { background: #d93025; }
+        .toast.info { background: #1a73e8; }
+        .toast.warning { background: #ff6d00; }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .toast.hide {
+            animation: toastOut 0.3s ease-in forwards;
+        }
+
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to { opacity: 0; transform: translateY(-20px) scale(0.95); }
+        }
+
+        /* ===== LOADING OVERLAY ===== */
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #loadingOverlay .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #fff;
+            border-top-color: #1a73e8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        #loadingOverlay p {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== AUTH BOX ===== */
         .auth-box {
             background: white;
             padding: 30px 25px;
@@ -23,9 +121,24 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: slideUp 0.5s ease-out;
         }
-        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .auth-box h1 { font-size: 28px; color: #1a73e8; margin-bottom: 4px; }
-        .auth-box .subtitle { color: #666; margin-bottom: 20px; font-size: 14px; }
+
+        @keyframes slideUp { 
+            from { transform: translateY(40px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+
+        .auth-box h1 { 
+            font-size: 28px; 
+            color: #1a73e8; 
+            margin-bottom: 4px; 
+        }
+
+        .auth-box .subtitle { 
+            color: #666; 
+            margin-bottom: 20px; 
+            font-size: 14px; 
+        }
+
         .auth-box input {
             width: 100%;
             padding: 14px 16px;
@@ -36,7 +149,30 @@
             background: #f8f9fa;
             transition: border-color 0.2s;
         }
-        .auth-box input:focus { border-color: #1a73e8; outline: none; background: white; }
+
+        .auth-box input:focus { 
+            border-color: #1a73e8; 
+            outline: none; 
+            background: white; 
+        }
+
+        .auth-box .forgot-link {
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .auth-box .forgot-link a {
+            font-size: 13px;
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .auth-box .forgot-link a:hover {
+            text-decoration: underline;
+        }
+
         .auth-box button {
             width: 100%;
             padding: 16px;
@@ -50,36 +186,94 @@
             color: white;
             transition: background 0.2s;
         }
-        .auth-box button:active { transform: scale(0.98); }
-        .auth-box button:hover { background: #1557b0; }
-        .auth-box .toggle-link { text-align: center; margin-top: 12px; font-size: 14px; color: #555; }
-        .auth-box .toggle-link a { color: #1a73e8; font-weight: 600; cursor: pointer; text-decoration: none; }
-        .auth-box .error-msg { color: #d93025; font-size: 14px; text-align: center; margin-top: 8px; }
-        .auth-box .success-msg { color: #0f9d58; font-size: 14px; text-align: center; margin-top: 8px; }
+
+        .auth-box button:active { 
+            transform: scale(0.98); 
+        }
+
+        .auth-box button:hover { 
+            background: #1557b0; 
+        }
+
+        .auth-box .toggle-link { 
+            text-align: center; 
+            margin-top: 12px; 
+            font-size: 14px; 
+            color: #555; 
+        }
+
+        .auth-box .toggle-link a { 
+            color: #1a73e8; 
+            font-weight: 600; 
+            cursor: pointer; 
+            text-decoration: none; 
+        }
+
+        .auth-box .toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        .auth-box .error-msg { 
+            color: #d93025; 
+            font-size: 14px; 
+            text-align: center; 
+            margin-top: 8px; 
+        }
+
+        .auth-box .success-msg { 
+            color: #0f9d58; 
+            font-size: 14px; 
+            text-align: center; 
+            margin-top: 8px; 
+        }
+
+        .mt-8 {
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toastContainer"></div>
+
+    <!-- ===== LOADING OVERLAY ===== -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <p id="loadingText">Loading...</p>
+    </div>
+
     <div class="auth-box">
         <h1>🏠 Saka Keja</h1>
         <p class="subtitle">Sign in to your account</p>
+        
         <form id="loginForm">
             <input type="email" id="loginEmail" placeholder="Email address" required>
             <input type="password" id="loginPassword" placeholder="Password" required>
-            <button type="submit">🔑 Sign In</button>
+            
+            <!-- ===== FORGOT PASSWORD LINK ===== -->
+            <div class="forgot-link">
+                <a href="#" id="forgotPassword">Forgot Password?</a>
+            </div>
+            
+            <button type="submit" id="loginBtn">🔑 Sign In</button>
         </form>
+        
         <div id="loginError" class="error-msg"></div>
         <div id="loginSuccess" class="success-msg"></div>
+        
         <div class="toggle-link">
             Don't have an account? <a href="register.html">Create one here</a>
         </div>
-        <div class="toggle-link" style="margin-top:4px;">
+        <div class="toggle-link mt-8">
             <a href="index.html">⬅️ Back to home</a>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script>
+        // ==============================================================
+        // FIREBASE CONFIG
+        // ==============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyCTekqCGBPIjxTK8iMm0gxLqX5JkhJndi4",
             authDomain: "saka-keja-54ae6.firebaseapp.com",
@@ -88,33 +282,155 @@
             messagingSenderId: "333792304442",
             appId: "1:333792304442:web:f316912480457b863c0403"
         };
+
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // Redirect if already logged in
+        // ==============================================================
+        // TOAST NOTIFICATIONS
+        // ==============================================================
+        function showToast(message, type = 'info', duration = 3000) {
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 300);
+            }, duration);
+        }
+
+        function toastSuccess(msg) { showToast(msg, 'success'); }
+        function toastError(msg) { showToast(msg, 'error'); }
+        function toastInfo(msg) { showToast(msg, 'info'); }
+        function toastWarning(msg) { showToast(msg, 'warning'); }
+
+        // ==============================================================
+        // LOADING STATES
+        // ==============================================================
+        function showLoading(text = 'Loading...') {
+            const overlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            loadingText.textContent = text;
+            overlay.style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // ==============================================================
+        // REDIRECT IF ALREADY LOGGED IN
+        // ==============================================================
         auth.onAuthStateChanged((user) => {
             if (user) {
                 window.location.href = 'index.html';
             }
         });
 
+        // ==============================================================
+        // LOGIN
+        // ==============================================================
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             const errorDiv = document.getElementById('loginError');
             const successDiv = document.getElementById('loginSuccess');
+            const loginBtn = document.getElementById('loginBtn');
+            
             errorDiv.textContent = '';
             successDiv.textContent = '';
+            
+            // Basic validation
+            if (!email || !password) {
+                toastWarning('Please fill in all fields.');
+                return;
+            }
+
+            // Disable button and show loading
+            loginBtn.disabled = true;
+            loginBtn.textContent = '⏳ Signing in...';
+            showLoading('Signing you in...');
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-                successDiv.textContent = '✅ Sign in successful! Redirecting...';
-                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+                successDiv.textContent = '✅ Sign in successful!';
+                toastSuccess('🎉 Welcome back!');
+                
+                setTimeout(() => {
+                    hideLoading();
+                    window.location.href = 'index.html';
+                }, 1500);
+                
             } catch (err) {
-                errorDiv.textContent = '❌ ' + err.message;
+                hideLoading();
+                loginBtn.disabled = false;
+                loginBtn.textContent = '🔑 Sign In';
+                
+                let errorMessage = err.message;
+                // Make error messages more user-friendly
+                if (errorMessage.includes('user-not-found')) {
+                    errorMessage = 'No account found with this email. Please register.';
+                } else if (errorMessage.includes('wrong-password')) {
+                    errorMessage = 'Incorrect password. Please try again.';
+                } else if (errorMessage.includes('too-many-requests')) {
+                    errorMessage = 'Too many failed attempts. Please try again later.';
+                } else if (errorMessage.includes('invalid-email')) {
+                    errorMessage = 'Please enter a valid email address.';
+                }
+                
+                errorDiv.textContent = '❌ ' + errorMessage;
+                toastError(errorMessage);
             }
         });
+
+        // ==============================================================
+        // FORGOT PASSWORD
+        // ==============================================================
+        document.getElementById('forgotPassword').addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+
+            if (!email) {
+                toastWarning('Please enter your email address first.');
+                return;
+            }
+
+            if (!email.includes('@') || !email.includes('.')) {
+                toastWarning('Please enter a valid email address.');
+                return;
+            }
+
+            showLoading('Sending password reset...');
+
+            try {
+                await auth.sendPasswordResetEmail(email);
+                hideLoading();
+                toastSuccess('✅ Password reset email sent! Check your inbox (and spam folder).');
+            } catch (err) {
+                hideLoading();
+                let errorMessage = err.message;
+                if (errorMessage.includes('user-not-found')) {
+                    errorMessage = 'No account found with this email.';
+                }
+                toastError('❌ ' + errorMessage);
+            }
+        });
+
+        console.log('✅ Saka Keja Login Page loaded!');
     </script>
 </body>
 </html>
