@@ -10,14 +10,10 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { padding: 20px; background: #f8fafc; }
-        #errorBox { 
-            background: #fee2e2; color: #991b1b; padding: 16px 20px; border-radius: 12px; 
-            margin-bottom: 20px; border: 1px solid #fecaca; display: none;
-        }
-        #errorBox pre { white-space: pre-wrap; font-size: 13px; margin-top: 8px; }
-        #map { height: calc(100vh - 120px); width: 100%; z-index: 1; border-radius: 12px; }
+        html, body { height: 100%; overflow: hidden; }
+        #map { height: calc(100vh - 50px); width: 100%; z-index: 1; }
         
+        /* ===== USER BAR ===== */
         #userBar {
             position: absolute;
             top: 10px;
@@ -46,6 +42,7 @@
         }
         #userBar .logout-btn:active { transform: scale(0.97); }
         
+        /* ===== CONTROLS ===== */
         #controls {
             position: absolute;
             bottom: 20px;
@@ -85,6 +82,9 @@
         }
         .btn-primary { background: #1a73e8; color: white; border: none !important; flex: 0.8 !important; }
         .btn-primary:active { background: #1557b0; transform: scale(0.97); }
+        .btn-favorites { background: #ff6d00; color: white; border: none !important; flex: 0.8 !important; }
+        .btn-favorites:active { background: #e65100; transform: scale(0.97); }
+        .btn-favorites.active { background: #d93025; }
         #controls .badge-count { background: #ff7800; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
         
         #loading {
@@ -101,262 +101,475 @@
             backdrop-filter: blur(4px);
         }
         
-        .popup-text { font-size: 14px; max-width: 220px; padding: 2px 0; }
+        /* ===== POPUP ===== */
+        .popup-text { font-size: 14px; max-width: 260px; padding: 2px 0; }
         .popup-text strong { font-size: 15px; display: block; margin-bottom: 2px; }
         .popup-text .price { color: #1a73e8; font-weight: 700; font-size: 16px; }
         .verified { color: #0f9d58; font-weight: 600; display: inline-block; margin-top: 4px; font-size: 12px; }
-        .leaflet-popup-content { min-width: 180px !important; max-width: 220px !important; }
+        
+        .popup-text .property-photo {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 6px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .popup-text .no-photo {
+            background: #f1f5f9;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-size: 13px;
+            margin: 6px 0;
+        }
+        
+        /* ===== POPUP ACTIONS ===== */
+        .popup-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .popup-actions button, .popup-actions a {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .popup-actions .favorite-btn { background: #e8f0fe; color: #1a73e8; }
+        .popup-actions .favorite-btn.active { background: #d93025; color: white; }
+        .popup-actions .favorite-btn:active { transform: scale(0.95); }
+        .popup-actions .call-btn { background: #0f9d58; color: white; }
+        .popup-actions .call-btn:active { background: #0b7e46; }
+        .popup-actions .whatsapp-btn { background: #25D366; color: white; }
+        .popup-actions .whatsapp-btn:active { background: #1da851; }
+        .popup-actions .share-btn { background: #1a73e8; color: white; }
+        .popup-actions .share-btn:active { background: #1557b0; }
+        
+        .leaflet-popup-content { min-width: 220px !important; max-width: 280px !important; }
         .leaflet-popup-content-wrapper { border-radius: 12px !important; }
         .leaflet-control-zoom { margin-bottom: 100px !important; margin-right: 10px !important; }
         .leaflet-control-zoom a { width: 44px !important; height: 44px !important; line-height: 44px !important; font-size: 20px !important; border-radius: 12px !important; }
         
-        @media screen and (max-width: 375px) {
-            #controls { padding: 10px 12px; bottom: 12px; }
-            #controls select, #controls button { font-size: 12px; padding: 8px 12px; }
-            #controls .app-title { font-size: 16px; }
+        /* ===== FAVORITES PANEL ===== */
+        #favoritesPanel {
+            position: absolute;
+            top: 70px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            width: 300px;
+            max-height: 70vh;
+            display: none;
+            overflow-y: auto;
+            padding: 16px;
         }
-        @media screen and (max-width: 320px) {
-            #controls .row-top { flex-direction: column; gap: 6px; }
-            #controls .row-bottom { flex-direction: column; gap: 6px; }
-            #controls select, #controls button { width: 100%; flex: none !important; }
+        #favoritesPanel.active { display: block; }
+        #favoritesPanel h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #1a73e8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #favoritesPanel .favorite-item {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #favoritesPanel .favorite-item:hover { background: #f8f9fa; }
+        #favoritesPanel .favorite-item .fav-name { font-weight: 600; font-size: 14px; }
+        #favoritesPanel .favorite-item .fav-area { font-size: 12px; color: #666; }
+        #favoritesPanel .favorite-item .fav-price { font-size: 13px; color: #1a73e8; font-weight: 600; }
+        #favoritesPanel .empty-favorites { color: #94a3b8; text-align: center; padding: 20px 0; }
+        #favoritesPanel .close-panel {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+            color: #94a3b8;
+            background: none;
+            border: none;
+        }
+        #favoritesPanel .close-panel:hover { color: #333; }
+        
+        @media screen and (max-width: 480px) {
+            #favoritesPanel { width: 260px; right: 5px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Error Display Box -->
-    <div id="errorBox">
-        <strong>❌ Something went wrong:</strong>
-        <pre id="errorMessage"></pre>
+<div id="map"></div>
+
+<!-- User Bar -->
+<div id="userBar">
+    <div class="user-info">
+        <span>👋</span>
+        <span class="name" id="userName">User</span>
+        <span class="role-badge">👤 Tenant</span>
     </div>
+    <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
+</div>
 
-    <div id="map"></div>
-
-    <!-- User Bar -->
-    <div id="userBar">
-        <div class="user-info">
-            <span>👋</span>
-            <span class="name" id="userName">User</span>
-            <span class="role-badge">👤 Tenant</span>
-        </div>
-        <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
+<!-- Controls -->
+<div id="controls">
+    <div class="row-top">
+        <span class="app-title">🏠 Saka Keja</span>
+        <span class="badge-count" id="countBadge">0 houses</span>
     </div>
-
-    <!-- Controls -->
-    <div id="controls">
-        <div class="row-top">
-            <span class="app-title">🏠 Saka Keja</span>
-            <span class="badge-count" id="countBadge">0 houses</span>
-        </div>
-        <div class="row-bottom">
-            <select id="typeFilter">
-                <option value="all">🏠 All</option>
-                <option value="bedsitter">🛏️ Bedsitter</option>
-                <option value="1 bedroom">🛏️ 1 BR</option>
-                <option value="2 bedrooms">🛏️ 2 BR</option>
-                <option value="3 bedrooms">🛏️ 3 BR+</option>
-                <option value="single room">🛏️ Single</option>
-                <option value="studio">🛏️ Studio</option>
-            </select>
-            <button id="find-me" class="btn-primary">📍 Near</button>
-        </div>
+    <div class="row-bottom">
+        <button id="favoritesToggle" class="btn-favorites">❤️ Favorites</button>
+        <select id="typeFilter">
+            <option value="all">🏠 All</option>
+            <option value="bedsitter">🛏️ Bedsitter</option>
+            <option value="1 bedroom">🛏️ 1 BR</option>
+            <option value="2 bedrooms">🛏️ 2 BR</option>
+            <option value="3 bedrooms">🛏️ 3 BR+</option>
+            <option value="single room">🛏️ Single</option>
+            <option value="studio">🛏️ Studio</option>
+        </select>
+        <button id="find-me" class="btn-primary">📍 Near</button>
     </div>
+</div>
 
-    <div id="loading">⏳ Loading houses...</div>
+<div id="loading">⏳ Loading houses...</div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        // ==============================================================
-        // FIREBASE CONFIG
-        // ==============================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyCTekqCGBPIjxTK8iMm0gxLqX5JkhJndi4",
-            authDomain: "saka-keja-54ae6.firebaseapp.com",
-            projectId: "saka-keja-54ae6",
-            storageBucket: "saka-keja-54ae6.firebasestorage.app",
-            messagingSenderId: "333792304442",
-            appId: "1:333792304442:web:f316912480457b863c0403"
-        };
+<!-- Favorites Panel -->
+<div id="favoritesPanel">
+    <button class="close-panel" id="closeFavorites">✕</button>
+    <h3>❤️ My Favorites</h3>
+    <div id="favoritesList">
+        <div class="empty-favorites">No favorites yet. ❤️ Save houses you like!</div>
+    </div>
+</div>
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // ==============================================================
+    // FIREBASE CONFIG
+    // ==============================================================
+    const firebaseConfig = {
+        apiKey: "AIzaSyCTekqCGBPIjxTK8iMm0gxLqX5JkhJndi4",
+        authDomain: "saka-keja-54ae6.firebaseapp.com",
+        projectId: "saka-keja-54ae6",
+        storageBucket: "saka-keja-54ae6.firebasestorage.app",
+        messagingSenderId: "333792304442",
+        appId: "1:333792304442:web:f316912480457b863c0403"
+    };
 
-        let currentUser = null;
-        let currentFilter = 'all';
-        let housesData = [];
-        let map = null;
-        let markerLayer = null;
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-        // ==============================================================
-        // SHOW ERROR ON PAGE (Instead of reloading)
-        // ==============================================================
-        function showError(message) {
-            const errorBox = document.getElementById('errorBox');
-            const errorMessage = document.getElementById('errorMessage');
-            errorBox.style.display = 'block';
-            errorMessage.textContent = message;
-            console.error('❌ ERROR:', message);
+    let currentUser = null;
+    let currentFilter = 'all';
+    let housesData = [];
+    let favorites = {};
+    let map = null;
+    let markerLayer = null;
+
+    // ==============================================================
+    // SHARE FUNCTION
+    // ==============================================================
+    function shareProperty(name, price, area, phone, photoUrl) {
+        const text = `🏠 ${name}\n📍 ${area}\n💰 ${price}\n📞 ${phone}\n\nFound on Saka Keja! 🏡`;
+        if (navigator.share) {
+            navigator.share({ title: `${name} - ${price}`, text: text }).catch(() => {});
+        } else {
+            const fullText = text + '\n\n' + window.location.href;
+            navigator.clipboard.writeText(fullText).then(() => {
+                alert('✅ Property details copied to clipboard! Share with your friends.');
+            }).catch(() => {
+                prompt('Copy this text to share:', fullText);
+            });
+        }
+    }
+
+    // ==============================================================
+    // TOGGLE FAVORITE
+    // ==============================================================
+    async function toggleFavorite(houseId, houseData) {
+        if (!currentUser) {
+            alert('Please log in to save favorites.');
+            return;
         }
 
-        // ==============================================================
-        // AUTH CHECK - NO AUTO-REDIRECT, SHOW ERRORS
-        // ==============================================================
-        auth.onAuthStateChanged(async (user) => {
-            console.log('🔍 Auth state changed. User:', user ? user.email : 'Not logged in');
+        const isFavorited = favorites[houseId] || false;
+        const favRef = db.collection('users').doc(currentUser.uid).collection('favorites').doc(houseId);
 
-            if (!user) {
-                showError('You are not logged in. Please go back to the landing page and login.');
-                document.getElementById('loading').textContent = '⚠️ Not logged in.';
-                document.getElementById('loading').style.display = 'block';
-                return;
+        try {
+            if (isFavorited) {
+                await favRef.delete();
+                delete favorites[houseId];
+                console.log('❌ Removed from favorites');
+            } else {
+                await favRef.set({
+                    houseId: houseId,
+                    propertyName: houseData.propertyName || 'Property',
+                    areaLocation: houseData.areaLocation || 'Unknown',
+                    price: houseData.price || 'Contact',
+                    lat: houseData.lat,
+                    lng: houseData.lng,
+                    phoneNumber: houseData.phoneNumber || '',
+                    photoUrl: houseData.photoUrl || '',
+                    addedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                favorites[houseId] = true;
+                console.log('✅ Added to favorites');
             }
+            // Refresh the map to show updated heart states
+            renderHouses(housesData);
+            renderFavorites();
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
+            alert('Error updating favorites: ' + error.message);
+        }
+    }
 
-            currentUser = user;
-            document.getElementById('userName').textContent = user.email || 'User';
+    // ==============================================================
+    // RENDER FAVORITES LIST
+    // ==============================================================
+    function renderFavorites() {
+        const list = document.getElementById('favoritesList');
+        
+        // Get all favorite house IDs
+        const favIds = Object.keys(favorites).filter(id => favorites[id] === true);
+        
+        if (favIds.length === 0) {
+            list.innerHTML = `<div class="empty-favorites">❤️ No favorites yet. Save houses you like!</div>`;
+            return;
+        }
 
-            try {
-                console.log('📄 Fetching user document for:', user.uid);
-                const doc = await db.collection('users').doc(user.uid).get();
-                
-                if (!doc.exists) {
-                    showError('User document not found in Firestore. Please register or contact support.');
-                    document.getElementById('loading').textContent = '⚠️ User profile not found.';
-                    document.getElementById('loading').style.display = 'block';
-                    return;
-                }
+        // Find the full house data for each favorite
+        let html = '';
+        favIds.forEach(id => {
+            const house = housesData.find(h => h.id === id);
+            if (house) {
+                html += `
+                    <div class="favorite-item" onclick="goToHouse(${house.lat}, ${house.lng})">
+                        <div class="fav-name">${house.propertyName || 'Property'}</div>
+                        <div class="fav-area">📍 ${house.areaLocation || 'Unknown'}</div>
+                        <div class="fav-price">💰 ${house.price || 'Contact'}</div>
+                    </div>
+                `;
+            } else {
+                // House might have been deleted - clean up
+                db.collection('users').doc(currentUser.uid).collection('favorites').doc(id).delete();
+                delete favorites[id];
+            }
+        });
 
+        if (html === '') {
+            list.innerHTML = `<div class="empty-favorites">❤️ No favorites yet. Save houses you like!</div>`;
+        } else {
+            list.innerHTML = html;
+        }
+    }
+
+    // ==============================================================
+    // GO TO HOUSE ON MAP
+    // ==============================================================
+    function goToHouse(lat, lng) {
+        if (map) {
+            map.setView([lat, lng], 16);
+            document.getElementById('favoritesPanel').classList.remove('active');
+        }
+    }
+
+    // ==============================================================
+    // LOAD FAVORITES FROM FIRESTORE
+    // ==============================================================
+    async function loadFavorites() {
+        if (!currentUser) return;
+        
+        try {
+            const snapshot = await db.collection('users').doc(currentUser.uid).collection('favorites').get();
+            favorites = {};
+            snapshot.forEach(doc => {
+                favorites[doc.id] = true;
+            });
+            console.log('✅ Loaded favorites:', Object.keys(favorites).length);
+        } catch (error) {
+            console.error('Error loading favorites:', error);
+        }
+    }
+
+    // ==============================================================
+    // AUTH CHECK
+    // ==============================================================
+    auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+            window.location.href = 'login.html';
+            return;
+        }
+        currentUser = user;
+        try {
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) {
                 const data = doc.data();
-                console.log('📄 User data:', data);
-
-                // Check if role exists
-                if (!data.role) {
-                    showError('User role is missing. Please contact support to fix this.');
-                    document.getElementById('loading').textContent = '⚠️ Role missing.';
-                    document.getElementById('loading').style.display = 'block';
-                    return;
-                }
-
-                // If user is a landlord, redirect to landlord page
+                document.getElementById('userName').textContent = data.name || 'User';
                 if (data.role === 'landlord') {
-                    console.log('🔄 User is a landlord. Redirecting to landlord.html...');
                     window.location.href = 'landlord.html';
                     return;
                 }
-
-                // If user is a tenant, load the map
-                console.log('✅ User is a tenant. Loading map...');
-                document.getElementById('loading').style.display = 'none';
-                initMap();
-                startHouseListener();
-
-            } catch (err) {
-                console.error('❌ Error in auth check:', err);
-                showError('Error loading profile: ' + err.message);
-                document.getElementById('loading').textContent = '⚠️ Error: ' + err.message;
-                document.getElementById('loading').style.display = 'block';
             }
-        });
+        } catch (err) {
+            console.error('Error:', err);
+        }
+        await loadFavorites();
+        initMap();
+        startHouseListener();
+    });
 
-        // ==============================================================
-        // LOGOUT
-        // ==============================================================
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            try { 
-                await auth.signOut(); 
-                window.location.href = 'index.html'; 
-            } catch (err) { 
-                console.error('Logout error:', err);
-                showError('Logout error: ' + err.message);
-            }
-        });
+    // ==============================================================
+    // LOGOUT
+    // ==============================================================
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try { await auth.signOut(); window.location.href = 'index.html'; } catch (err) { console.error(err); }
+    });
 
-        // ==============================================================
-        // MAP SETUP
-        // ==============================================================
-        function initMap() {
-            map = L.map('map', { zoomControl: true, attributionControl: true }).setView([-1.22, 36.85], 11);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-            markerLayer = L.layerGroup().addTo(map);
+    // ==============================================================
+    // FAVORITES TOGGLE
+    // ==============================================================
+    document.getElementById('favoritesToggle').addEventListener('click', () => {
+        const panel = document.getElementById('favoritesPanel');
+        panel.classList.toggle('active');
+        if (panel.classList.contains('active')) {
+            renderFavorites();
+        }
+    });
+
+    document.getElementById('closeFavorites').addEventListener('click', () => {
+        document.getElementById('favoritesPanel').classList.remove('active');
+    });
+
+    // ==============================================================
+    // MAP SETUP
+    // ==============================================================
+    function initMap() {
+        map = L.map('map', { zoomControl: true, attributionControl: true }).setView([-1.22, 36.85], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+        markerLayer = L.layerGroup().addTo(map);
+        document.getElementById('loading').style.display = 'none';
+    }
+
+    // ==============================================================
+    // RENDER HOUSES WITH FAVORITES
+    // ==============================================================
+    function renderHouses(houses) {
+        if (!markerLayer) return;
+        markerLayer.clearLayers();
+        
+        let filtered = houses;
+        if (currentFilter !== 'all') {
+            filtered = houses.filter(h => h.propertyType && h.propertyType.toLowerCase() === currentFilter);
         }
 
-        // ==============================================================
-        // RENDER HOUSES
-        // ==============================================================
-        function renderHouses(houses) {
-            if (!markerLayer) return;
-            markerLayer.clearLayers();
+        filtered.forEach(house => {
+            if (!house.lat || !house.lng) return;
+            const marker = L.marker([house.lat, house.lng], { riseOnHover: true }).addTo(markerLayer);
             
-            let filtered = houses;
-            if (currentFilter !== 'all') {
-                filtered = houses.filter(h => h.propertyType && h.propertyType.toLowerCase() === currentFilter);
-            }
-
-            filtered.forEach(house => {
-                if (!house.lat || !house.lng) return;
-                const marker = L.marker([house.lat, house.lng], { riseOnHover: true }).addTo(markerLayer);
-                marker.bindPopup(`
-                    <div class="popup-text">
-                        <strong>${house.propertyName || 'Property'}</strong>
-                        📍 ${house.areaLocation || 'Unknown'}<br>
-                        💰 <span class="price">${house.price || 'Contact'}</span><br>
-                        📞 ${house.phoneNumber || 'N/A'}<br>
-                        🏠 ${house.propertyType ? house.propertyType.charAt(0).toUpperCase() + house.propertyType.slice(1) : 'Other'}<br>
-                        <span class="verified">✅ Verified by Saka Keja</span>
-                    </div>
-                `);
-            });
-
-            document.getElementById('countBadge').textContent = `🏠 ${filtered.length}`;
-        }
-
-        // ==============================================================
-        // REAL-TIME LISTENER
-        // ==============================================================
-        function startHouseListener() {
-            if (window.houseListener) { window.houseListener(); }
-            window.houseListener = db.collection('houses')
-                .orderBy('createdAt', 'desc')
-                .onSnapshot((snapshot) => {
-                    housesData = [];
-                    snapshot.forEach(doc => {
-                        housesData.push({ id: doc.id, ...doc.data() });
-                    });
-                    renderHouses(housesData);
-                    document.getElementById('loading').style.display = 'none';
-                }, (error) => {
-                    console.error('Error:', error);
-                    showError('Error loading houses: ' + error.message);
-                    document.getElementById('loading').innerHTML = '⚠️ Error loading';
-                });
-        }
-
-        // ==============================================================
-        // EVENT LISTENERS
-        // ==============================================================
-        document.getElementById('typeFilter').addEventListener('change', function(e) {
-            currentFilter = e.target.value;
-            renderHouses(housesData);
-        });
-
-        document.getElementById('find-me').addEventListener('click', function() {
-            if (!map) return;
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    pos => {
-                        map.setView([pos.coords.latitude, pos.coords.longitude], 14);
-                        L.circle([pos.coords.latitude, pos.coords.longitude], {
-                            color: '#1a73e8', fillColor: '#1a73e8', fillOpacity: 0.15, radius: 200, weight: 3
-                        }).addTo(map).bindPopup("📍 You are here!").openPopup();
-                    },
-                    () => alert("Please allow GPS access.")
-                );
+            // Build photo HTML
+            let photoHtml = '';
+            if (house.photoUrl && house.photoUrl.startsWith('http')) {
+                photoHtml = `<img src="${house.photoUrl}" class="property-photo" alt="Property photo" onerror="this.style.display='none'">`;
             } else {
-                alert("Your browser doesn't support GPS.");
+                photoHtml = `<div class="no-photo">📷 No photo uploaded</div>`;
             }
+            
+            // Format phone for WhatsApp
+            const phoneDigits = house.phoneNumber ? house.phoneNumber.replace(/\D/g, '') : '';
+            const whatsappLink = phoneDigits ? `https://wa.me/254${phoneDigits.replace(/^0+/, '')}` : '#';
+            const callLink = house.phoneNumber ? `tel:${house.phoneNumber}` : '#';
+            
+            // Check if this house is favorited
+            const isFav = favorites[house.id] || false;
+            const favClass = isFav ? 'active' : '';
+            const favText = isFav ? '❤️' : '🤍';
+            
+            // Build popup content
+            let popupContent = `
+                <div class="popup-text">
+                    <strong>${house.propertyName || 'Property'}</strong>
+                    📍 ${house.areaLocation || 'Unknown'}<br>
+                    💰 <span class="price">${house.price || 'Contact'}</span><br>
+                    📞 ${house.phoneNumber || 'N/A'}<br>
+                    🏠 ${house.propertyType ? house.propertyType.charAt(0).toUpperCase() + house.propertyType.slice(1) : 'Other'}<br>
+                    ${photoHtml}
+                    <span class="verified">✅ Verified by Saka Keja</span>
+                    <div class="popup-actions">
+                        <button class="favorite-btn ${favClass}" onclick="toggleFavorite('${house.id}', ${JSON.stringify(house).replace(/"/g, '&quot;')})">${favText}</button>
+                        <a href="${callLink}" class="call-btn" target="_blank">📞 Call</a>
+                        <a href="${whatsappLink}" class="whatsapp-btn" target="_blank">💬 WhatsApp</a>
+                        <button class="share-btn" onclick="shareProperty('${house.propertyName || 'Property'}', '${house.price || 'Contact'}', '${house.areaLocation || 'Unknown'}', '${house.phoneNumber || 'N/A'}', '${house.photoUrl || ''}')">📤 Share</button>
+            `;
+            popupContent += `</div></div>`;
+            marker.bindPopup(popupContent);
         });
 
-        console.log('✅ Saka Keja Tenant App loaded!');
-    </script>
+        document.getElementById('countBadge').textContent = `🏠 ${filtered.length}`;
+    }
+
+    // ==============================================================
+    // REAL-TIME LISTENER
+    // ==============================================================
+    function startHouseListener() {
+        if (window.houseListener) { window.houseListener(); }
+        window.houseListener = db.collection('houses')
+            .orderBy('createdAt', 'desc')
+            .onSnapshot((snapshot) => {
+                housesData = [];
+                snapshot.forEach(doc => {
+                    housesData.push({ id: doc.id, ...doc.data() });
+                });
+                renderHouses(housesData);
+                document.getElementById('loading').style.display = 'none';
+            }, (error) => {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = '⚠️ Error loading';
+            });
+    }
+
+    // ==============================================================
+    // EVENT LISTENERS
+    // ==============================================================
+    document.getElementById('typeFilter').addEventListener('change', function(e) {
+        currentFilter = e.target.value;
+        renderHouses(housesData);
+    });
+
+    document.getElementById('find-me').addEventListener('click', function() {
+        if (!map) return;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                pos => {
+                    map.setView([pos.coords.latitude, pos.coords.longitude], 14);
+                    L.circle([pos.coords.latitude, pos.coords.longitude], {
+                        color: '#1a73e8', fillColor: '#1a73e8', fillOpacity: 0.15, radius: 200, weight: 3
+                    }).addTo(map).bindPopup("📍 You are here!").openPopup();
+                },
+                () => alert("Please allow GPS access.")
+            );
+        } else {
+            alert("Your browser doesn't support GPS.");
+        }
+    });
+
+    console.log('✅ Saka Keja Tenant App loaded!');
+</script>
 </body>
 </html>
