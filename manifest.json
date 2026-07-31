@@ -12,52 +12,75 @@
     "dir": "ltr",
     "icons": [
         {
-            "src": "/icons/icon-72.png",
-            "sizes": "72x72",
+            "src": "/icons/Square44x44Logo.scale-100.png",
+            "sizes": "44x44",
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/Square44x44Logo.scale-125.png",
+            "sizes": "55x55",
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/Square44x44Logo.scale-150.png",
+            "sizes": "66x66",
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/Square44x44Logo.scale-200.png",
+            "sizes": "88x88",
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/Square44x44Logo.scale-400.png",
+            "sizes": "176x176",
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/Square150x150Logo.scale-100.png",
+            "sizes": "150x150",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "/icons/icon-96.png",
-            "sizes": "96x96",
+            "src": "/icons/Square150x150Logo.scale-125.png",
+            "sizes": "188x188",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "/icons/icon-128.png",
-            "sizes": "128x128",
+            "src": "/icons/Square150x150Logo.scale-150.png",
+            "sizes": "225x225",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "/icons/icon-144.png",
-            "sizes": "144x144",
+            "src": "/icons/Square150x150Logo.scale-200.png",
+            "sizes": "300x300",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "/icons/icon-152.png",
-            "sizes": "152x152",
+            "src": "/icons/Square150x150Logo.scale-400.png",
+            "sizes": "600x600",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "/icons/icon-192.png",
-            "sizes": "192x192",
+            "src": "/icons/Square44x44Logo.targetsize-256.png",
+            "sizes": "256x256",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "/icons/icon-384.png",
-            "sizes": "384x384",
-            "type": "image/png",
-            "purpose": "any maskable"
+            "src": "/icons/StoreLogo.scale-400.png",
+            "sizes": "400x400",
+            "type": "image/png"
         },
         {
-            "src": "/icons/icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any maskable"
+            "src": "/icons/Wide310x150Logo.scale-400.png",
+            "sizes": "1240x600",
+            "type": "image/png"
         }
     ]
 }
