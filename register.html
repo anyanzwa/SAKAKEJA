@@ -1,42 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- PWA Meta Tags -->
-<!-- PWA Meta Tags -->
-    <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="/icons/Square150x150Logo.scale-100.png">
-    <meta name="theme-color" content="#1a73e8">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="icon" type="image/png" sizes="150x150" href="/icons/Square150x150Logo.scale-100.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Register - Saka Keja</title>
-    
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    
+
     <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+        /* ============================================================
+           GLOBAL RESET & BASE
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        body { 
-            height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background: linear-gradient(135deg, #f9f9f9 0%, #0d47a1 100%);
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0b0f1e;
+            color: #eef2f6;
             padding: 20px;
         }
-        
-        /* ===== TOAST NOTIFICATIONS ===== */
+
+        /* ============================================================
+           BACKGROUND
+           ============================================================ */
+        .bg-simple {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            background: linear-gradient(135deg, #0b0f1e 0%, #1a1f3a 50%, #0f1428 100%);
+        }
+
+        /* ============================================================
+           TOAST & LOADING
+           ============================================================ */
         #toastContainer {
             position: fixed;
             bottom: 100px;
@@ -52,24 +62,23 @@
         }
 
         .toast {
-            background: #1e293b;
+            background: rgba(30, 41, 59, 0.95);
             color: white;
             padding: 12px 24px;
-            border-radius: 12px;
+            border-radius: 16px;
             font-size: 14px;
             font-weight: 500;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             animation: toastIn 0.4s ease-out;
             pointer-events: auto;
             text-align: center;
             max-width: 400px;
-            backdrop-filter: blur(8px);
         }
 
-        .toast.success { background: #0f9d58; }
-        .toast.error { background: #d93025; }
-        .toast.info { background: #1a73e8; }
-        .toast.warning { background: #ff6d00; }
+        .toast.success { background: #10b981; }
+        .toast.error { background: #ef4444; }
+        .toast.info { background: #3b82f6; }
+        .toast.warning { background: #f59e0b; }
 
         @keyframes toastIn {
             from { opacity: 0; transform: translateY(30px) scale(0.95); }
@@ -85,7 +94,6 @@
             to { opacity: 0; transform: translateY(-20px) scale(0.95); }
         }
 
-        /* ===== LOADING OVERLAY ===== */
         #loadingOverlay {
             display: none;
             position: fixed;
@@ -93,7 +101,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(11, 15, 30, 0.9);
             z-index: 9999;
             align-items: center;
             justify-content: center;
@@ -104,82 +112,130 @@
         #loadingOverlay .spinner {
             width: 48px;
             height: 48px;
-            border: 4px solid #fff;
-            border-top-color: #1a73e8;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: #f97316;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
 
         #loadingOverlay p {
-            color: #fff;
+            color: #eef2f6;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* ===== AUTH BOX ===== */
-        .auth-box {
-            background: white;
-            padding: 30px 25px;
-            border-radius: 24px;
-            max-width: 400px;
+        /* ============================================================
+           AUTH BOX
+           ============================================================ */
+        .auth-container {
+            position: relative;
+            z-index: 1;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideUp 0.5s ease-out;
+            max-width: 420px;
         }
 
-        @keyframes slideUp { 
-            from { transform: translateY(40px); opacity: 0; } 
-            to { transform: translateY(0); opacity: 1; } 
+        .auth-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 32px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeUp 0.6s ease-out;
         }
 
-        .auth-box h1 { 
-            font-size: 28px; 
-            color: #1a73e8; 
-            margin-bottom: 4px; 
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .auth-box .subtitle { 
-            color: #666; 
-            margin-bottom: 20px; 
-            font-size: 14px; 
+        .auth-box .logo {
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 4px;
+            color: #eef2f6;
+        }
+
+        .auth-box .logo span {
+            color: #f97316;
+        }
+
+        .auth-box .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 24px;
         }
 
         .auth-box input {
             width: 100%;
             padding: 14px 16px;
-            margin: 8px 0;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
+            margin: 6px 0;
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
             font-size: 15px;
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.06);
+            color: #eef2f6;
             transition: border-color 0.2s;
         }
 
-        .auth-box input:focus { 
-            border-color: #1a73e8; 
-            outline: none; 
-            background: white; 
+        .auth-box input::placeholder {
+            color: #64748b;
         }
 
-        .auth-box .role-select { 
-            margin: 8px 0; 
+        .auth-box input:focus {
+            border-color: #f97316;
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
         }
 
-        .auth-box .role-select label { 
-            display: inline-block; 
-            margin-right: 20px; 
-            font-size: 14px; 
-            font-weight: 500; 
-            cursor: pointer; 
+        /* Password match indicator */
+        .password-match-hint {
+            font-size: 12px;
+            margin-top: -4px;
+            margin-bottom: 8px;
+            min-height: 20px;
         }
 
-        .auth-box .role-select input[type="radio"] { 
-            width: auto; 
-            margin-right: 6px; 
+        .password-match-hint .match-valid {
+            color: #34d399;
+        }
+
+        .password-match-hint .match-invalid {
+            color: #f87171;
+        }
+
+        .password-match-hint .match-empty {
+            color: #64748b;
+        }
+
+        .auth-box .role-select {
+            margin: 8px 0;
+        }
+
+        .auth-box .role-select label {
+            display: inline-block;
+            margin-right: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .auth-box .role-select label:hover {
+            color: #eef2f6;
+        }
+
+        .auth-box .role-select input[type="radio"] {
+            width: auto;
+            margin-right: 6px;
+            accent-color: #f97316;
         }
 
         .auth-box button {
@@ -187,82 +243,103 @@
             padding: 16px;
             margin: 12px 0 8px;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 17px;
             font-weight: 700;
             cursor: pointer;
-            background: #0f9d58;
-            color: white;
-            transition: background 0.2s;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: #0b0f1e;
+            transition: all 0.2s ease;
         }
 
-        .auth-box button:active { 
-            transform: scale(0.98); 
+        .auth-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(16, 185, 129, 0.3);
         }
 
-        .auth-box button:hover { 
-            background: #0b7e46; 
+        .auth-box button:active {
+            transform: scale(0.97);
         }
 
         .auth-box button:disabled {
             opacity: 0.7;
             cursor: not-allowed;
+            transform: none;
         }
 
-        .auth-box .toggle-link { 
-            text-align: center; 
-            margin-top: 12px; 
-            font-size: 14px; 
-            color: #555; 
+        .auth-box .error-msg {
+            color: #f87171;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 8px;
         }
 
-        .auth-box .toggle-link a { 
-            color: #1a73e8; 
-            font-weight: 600; 
-            cursor: pointer; 
-            text-decoration: none; 
+        .auth-box .success-msg {
+            color: #34d399;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .auth-box .toggle-link {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .auth-box .toggle-link a {
+            color: #f97316;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         .auth-box .toggle-link a:hover {
             text-decoration: underline;
         }
 
-        .auth-box .error-msg { 
-            color: #d93025; 
-            font-size: 14px; 
-            text-align: center; 
-            margin-top: 8px; 
-        }
-
-        .auth-box .success-msg { 
-            color: #0f9d58; 
-            font-size: 14px; 
-            text-align: center; 
-            margin-top: 8px; 
-        }
-
-        .mt-8 {
+        .auth-box .back-link {
+            text-align: center;
             margin-top: 8px;
+            font-size: 13px;
         }
 
-        /* Password strength indicator */
-        .password-hint {
-            font-size: 12px;
-            color: #888;
-            margin-top: -4px;
-            margin-bottom: 8px;
+        .auth-box .back-link a {
+            color: #64748b;
+            text-decoration: none;
+            cursor: pointer;
         }
 
-        .password-hint .valid {
-            color: #0f9d58;
+        .auth-box .back-link a:hover {
+            color: #94a3b8;
         }
 
-        .password-hint .invalid {
-            color: #d93025;
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media screen and (max-width: 480px) {
+            .auth-box {
+                padding: 24px 18px;
+            }
+            .auth-box .logo {
+                font-size: 24px;
+            }
+            .auth-box input {
+                padding: 12px 14px;
+                font-size: 14px;
+            }
+            .auth-box button {
+                padding: 14px;
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- ===== BACKGROUND ===== -->
+    <div class="bg-simple"></div>
 
     <!-- ===== TOAST CONTAINER ===== -->
     <div id="toastContainer"></div>
@@ -273,53 +350,49 @@
         <p id="loadingText">Loading...</p>
     </div>
 
-    <div class="auth-box">
-        <h1>🏠 Saka Keja</h1>
-        <p class="subtitle">Create your free account</p>
-        
-        <form id="registerForm">
-            <input type="text" id="registerName" placeholder="Full name" required autocomplete="name">
-            <input type="email" id="registerEmail" placeholder="Email address" required autocomplete="email">
-            <input type="password" id="registerPassword" placeholder="Password (min 6 characters)" required autocomplete="new-password">
-            
-            <!-- Password strength hint -->
-            <div class="password-hint" id="passwordHint">
-                <span id="lengthCheck">❌</span> At least 6 characters
+    <!-- ===== AUTH CONTAINER ===== -->
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="logo">
+                🏠 Saka<span>Keja</span>
             </div>
-            
-            <div class="role-select">
-                <label>I am a:</label>
-                <label><input type="radio" name="role" value="tenant" checked> 👤 Tenant</label>
-                <label><input type="radio" name="role" value="landlord"> 👔 Landlord</label>
+            <p class="subtitle">Create your free account</p>
+
+            <form id="registerForm">
+                <input type="text" id="registerName" placeholder="Full name" required autocomplete="name">
+                <input type="email" id="registerEmail" placeholder="Email address" required autocomplete="email">
+
+                <!-- Password -->
+                <input type="password" id="registerPassword" placeholder="Password (min 6 characters)" required autocomplete="new-password">
+
+                <!-- Confirm Password -->
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required autocomplete="new-password">
+
+                <!-- Password Match Hint -->
+                <div class="password-match-hint" id="passwordMatchHint">
+                    <span id="matchStatus">🔑</span> <span id="matchText" class="match-empty">Passwords must match</span>
+                </div>
+
+                <div class="role-select">
+                    <label>I am a:</label>
+                    <label><input type="radio" name="role" value="tenant" checked> 👤 Tenant</label>
+                    <label><input type="radio" name="role" value="landlord"> 👔 Landlord</label>
+                </div>
+
+                <button type="submit" id="registerBtn">📝 Create Account</button>
+            </form>
+
+            <div id="registerError" class="error-msg"></div>
+            <div id="registerSuccess" class="success-msg"></div>
+
+            <div class="toggle-link">
+                Already have an account? <a href="login.html">Sign in here</a>
             </div>
-            
-            <button type="submit" id="registerBtn">📝 Create Account</button>
-        </form>
-        
-        <div id="registerError" class="error-msg"></div>
-        <div id="registerSuccess" class="success-msg"></div>
-        
-        <div class="toggle-link">
-            Already have an account? <a href="login.html">Sign in here</a>
-        </div>
-        <div class="toggle-link mt-8">
-            <a href="index.html">⬅️ Back to home</a>
+            <div class="back-link">
+                <a href="index.html">⬅️ Back to home</a>
+            </div>
         </div>
     </div>
-    <script>
-    // ==============================================================
-    // REGISTER SERVICE WORKER (PWA)
-    // ==============================================================
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('✅ Service Worker registered successfully!');
-            })
-            .catch(error => {
-                console.log('❌ Service Worker registration failed:', error);
-            });
-    }
-    </script>
 
     <script>
         // ==============================================================
@@ -339,7 +412,7 @@
         const db = firebase.firestore();
 
         // ==============================================================
-        // TOAST NOTIFICATIONS
+        // TOAST & LOADING
         // ==============================================================
         function showToast(message, type = 'info', duration = 3000) {
             let container = document.getElementById('toastContainer');
@@ -348,17 +421,13 @@
                 container.id = 'toastContainer';
                 document.body.appendChild(container);
             }
-
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.textContent = message;
             container.appendChild(toast);
-
             setTimeout(() => {
                 toast.classList.add('hide');
-                setTimeout(() => {
-                    if (toast.parentNode) toast.remove();
-                }, 300);
+                setTimeout(() => { if (toast.parentNode) toast.remove(); }, 300);
             }, duration);
         }
 
@@ -367,14 +436,9 @@
         function toastInfo(msg) { showToast(msg, 'info'); }
         function toastWarning(msg) { showToast(msg, 'warning'); }
 
-        // ==============================================================
-        // LOADING STATES
-        // ==============================================================
         function showLoading(text = 'Loading...') {
-            const overlay = document.getElementById('loadingOverlay');
-            const loadingText = document.getElementById('loadingText');
-            loadingText.textContent = text;
-            overlay.style.display = 'flex';
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('loadingText').textContent = text;
         }
 
         function hideLoading() {
@@ -382,20 +446,44 @@
         }
 
         // ==============================================================
-        // PASSWORD STRENGTH CHECKER
+        // PASSWORD MATCH CHECKER
         // ==============================================================
-        document.getElementById('registerPassword').addEventListener('input', function() {
-            const password = this.value;
-            const lengthCheck = document.getElementById('lengthCheck');
-            
-            if (password.length >= 6) {
-                lengthCheck.textContent = '✅';
-                lengthCheck.className = 'valid';
-            } else {
-                lengthCheck.textContent = '❌';
-                lengthCheck.className = 'invalid';
+        const passwordInput = document.getElementById('registerPassword');
+        const confirmInput = document.getElementById('confirmPassword');
+        const matchStatus = document.getElementById('matchStatus');
+        const matchText = document.getElementById('matchText');
+
+        function checkPasswordMatch() {
+            const password = passwordInput.value;
+            const confirm = confirmInput.value;
+
+            if (password.length === 0 && confirm.length === 0) {
+                matchStatus.textContent = '🔑';
+                matchText.textContent = 'Passwords must match';
+                matchText.className = 'match-empty';
+                return false;
             }
-        });
+
+            if (password.length >= 6 && confirm.length >= 6 && password === confirm) {
+                matchStatus.textContent = '✅';
+                matchText.textContent = 'Passwords match!';
+                matchText.className = 'match-valid';
+                return true;
+            } else if (confirm.length > 0 && password !== confirm) {
+                matchStatus.textContent = '❌';
+                matchText.textContent = 'Passwords do not match';
+                matchText.className = 'match-invalid';
+                return false;
+            } else {
+                matchStatus.textContent = '⏳';
+                matchText.textContent = 'Keep typing...';
+                matchText.className = 'match-empty';
+                return false;
+            }
+        }
+
+        passwordInput.addEventListener('input', checkPasswordMatch);
+        confirmInput.addEventListener('input', checkPasswordMatch);
 
         // ==============================================================
         // REDIRECT IF ALREADY LOGGED IN
@@ -411,17 +499,18 @@
         // ==============================================================
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const name = document.getElementById('registerName').value.trim();
             const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
             const roleRadio = document.querySelector('input[name="role"]:checked');
             const role = roleRadio ? roleRadio.value : 'tenant';
             const registerBtn = document.getElementById('registerBtn');
-            
+
             const errorDiv = document.getElementById('registerError');
             const successDiv = document.getElementById('registerSuccess');
-            
+
             errorDiv.textContent = '';
             successDiv.textContent = '';
 
@@ -441,42 +530,38 @@
                 return;
             }
 
-            // ===== SUBMIT =====
+            if (password !== confirmPassword) {
+                toastWarning('Passwords do not match. Please try again.');
+                return;
+            }
+
             registerBtn.disabled = true;
             registerBtn.textContent = '⏳ Creating account...';
             showLoading('Creating your account...');
 
             try {
-                // STEP 1: Create user in Firebase Authentication
                 const userCred = await auth.createUserWithEmailAndPassword(email, password);
                 const user = userCred.user;
-                console.log('✅ User created in Auth:', user.uid);
 
-                // STEP 2: Save user data to Firestore
                 await db.collection('users').doc(user.uid).set({
                     name: name,
                     email: email,
                     role: role,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                console.log('✅ User document created in Firestore');
 
                 hideLoading();
                 successDiv.textContent = '✅ Account created successfully!';
                 toastSuccess('🎉 Welcome to Saka Keja, ' + name + '!');
-                
+
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 1500);
-
             } catch (err) {
                 hideLoading();
                 registerBtn.disabled = false;
                 registerBtn.textContent = '📝 Create Account';
-                
-                console.error('❌ Registration error:', err);
-                
-                // User-friendly error messages
+
                 let errorMessage = err.message;
                 if (errorMessage.includes('email-already-in-use')) {
                     errorMessage = 'This email is already registered. Please login instead.';
@@ -487,13 +572,11 @@
                 } else if (errorMessage.includes('network-request-failed')) {
                     errorMessage = 'Network error. Please check your internet connection.';
                 }
-                
+
                 errorDiv.textContent = '❌ ' + errorMessage;
                 toastError(errorMessage);
             }
         });
-
-        console.log('✅ Saka Keja Register Page loaded!');
     </script>
 </body>
 </html>
