@@ -28,7 +28,7 @@
         }
 
         /* ============================================================
-           SIMPLE FAST BACKGROUND (No heavy blur animations)
+           SIMPLE FAST BACKGROUND
            ============================================================ */
         .bg-simple {
             position: fixed;
@@ -798,20 +798,56 @@
         }
 
         // ==============================================================
-        // AUTH STATE
+        // AUTH STATE - FIXED: Shows user name and recovers missing profiles
         // ==============================================================
         auth.onAuthStateChanged(async (user) => {
             document.getElementById('landing').style.display = 'block';
 
             if (user) {
+                console.log('👤 User logged in:', user.email);
+
+                // ==== 1. FETCH USER DATA OR RECOVER ====
                 let userName = 'User';
+                let userRole = 'tenant';
+
                 try {
                     const doc = await db.collection('users').doc(user.uid).get();
-                    if (doc.exists) userName = doc.data().name || 'User';
-                } catch (e) {}
+                    console.log('📄 User document exists:', doc.exists);
 
+                    if (doc.exists) {
+                        const data = doc.data();
+                        userName = data.name || 'User';
+                        userRole = data.role || 'tenant';
+                        console.log('📄 User name from Firestore:', userName);
+                    } else {
+                        // ==== RECOVERY: Profile is missing — create it now ====
+                        console.warn('⚠️ User document NOT found! Attempting recovery...');
+                        try {
+                            await db.collection('users').doc(user.uid).set({
+                                name: user.displayName || 'User',
+                                email: user.email,
+                                role: 'tenant',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                            console.log('✅ User document created on the fly!');
+                            userName = user.displayName || 'User';
+                            userRole = 'tenant';
+                            toastSuccess('✅ Profile recovered! Welcome, ' + userName);
+                        } catch (recoveryErr) {
+                            console.error('❌ Failed to create user document:', recoveryErr);
+                            toastError('Could not recover profile. Please contact support.');
+                            // Continue with default values so app still works
+                        }
+                    }
+                } catch (err) {
+                    console.error('❌ Error fetching user data:', err);
+                    toastError('Error loading profile.');
+                }
+
+                // ==== 2. UPDATE UI WITH USER NAME ====
                 userStatus.innerHTML = `✅ <span class="logged-in">Welcome, ${userName}</span>`;
 
+                // ==== 3. UPDATE BUTTONS ====
                 navButtons.innerHTML = `
                     <button class="btn btn-danger" id="logoutBtnNav">🚪 Logout</button>
                     <button class="btn btn-dashboard" id="dashboardBtnNav">🚀 Dashboard</button>
@@ -830,6 +866,7 @@
                 document.getElementById('dashboardBtnCta').addEventListener('click', goToDashboard);
 
             } else {
+                // ===== USER NOT LOGGED IN =====
                 userStatus.innerHTML = '🔴 <span class="logged-out">Not logged in</span>';
 
                 navButtons.innerHTML = `
@@ -857,7 +894,7 @@
             }
         }, 3000);
 
-        console.log('✅ Saka Keja optimized landing loaded.');
+        console.log('✅ Saka Keja optimized landing loaded with profile recovery.');
     </script>
 </body>
-</html>"<!-- v1.0.0 -->" 
+</html>
