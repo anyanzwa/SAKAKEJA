@@ -814,29 +814,25 @@
                     const doc = await db.collection('users').doc(user.uid).get();
                     console.log('📄 User document exists:', doc.exists);
 
-                    if (doc.exists) {
-                        const data = doc.data();
-                        userName = data.name || 'User';
-                        userRole = data.role || 'tenant';
-                        console.log('📄 User name from Firestore:', userName);
-                    } else {
-                        // ==== RECOVERY: Profile is missing — create it now ====
+                    // In index.html - recovery section
+                    if (!doc.exists) {
                         console.warn('⚠️ User document NOT found! Attempting recovery...');
                         try {
+                            // Try to get name from localStorage or use email
+                            const savedName = localStorage.getItem('tempUserName') || user.displayName || user.email.split('@')[0] || 'User';
                             await db.collection('users').doc(user.uid).set({
-                                name: user.displayName || 'User',
+                                name: savedName,
                                 email: user.email,
                                 role: 'tenant',
                                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
-                            console.log('✅ User document created on the fly!');
-                            userName = user.displayName || 'User';
+                            console.log('✅ User document created on the fly with name:', savedName);
+                            userName = savedName;
                             userRole = 'tenant';
                             toastSuccess('✅ Profile recovered! Welcome, ' + userName);
                         } catch (recoveryErr) {
                             console.error('❌ Failed to create user document:', recoveryErr);
                             toastError('Could not recover profile. Please contact support.');
-                            // Continue with default values so app still works
                         }
                     }
                 } catch (err) {
@@ -898,3 +894,4 @@
     </script>
 </body>
 </html>"<!-- v2.0.0 -->" 
+"<!-- v2.0.0 -->" 
