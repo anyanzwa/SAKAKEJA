@@ -1,56 +1,16 @@
 {
     "name": "Saka Keja - Find Rental Houses",
     "short_name": "Saka Keja",
-    "description": "Find verified rental houses in Nairobi, Kiambu and other Kenyan cities",
+    "description": "Find verified rental houses in Kenya",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#f8fafc",
     "theme_color": "#1a73e8",
     "orientation": "portrait",
-    "categories": ["real estate", "rentals", "housing"],
-    "lang": "en",
-    "dir": "ltr",
     "icons": [
-        {
-            "src": "/icons/Square44x44Logo.scale-100.png",
-            "sizes": "44x44",
-            "type": "image/png"
-        },
-        {
-            "src": "/icons/Square44x44Logo.scale-125.png",
-            "sizes": "55x55",
-            "type": "image/png"
-        },
-        {
-            "src": "/icons/Square44x44Logo.scale-150.png",
-            "sizes": "66x66",
-            "type": "image/png"
-        },
-        {
-            "src": "/icons/Square44x44Logo.scale-200.png",
-            "sizes": "88x88",
-            "type": "image/png"
-        },
-        {
-            "src": "/icons/Square44x44Logo.scale-400.png",
-            "sizes": "176x176",
-            "type": "image/png"
-        },
         {
             "src": "/icons/Square150x150Logo.scale-100.png",
             "sizes": "150x150",
-            "type": "image/png",
-            "purpose": "any maskable"
-        },
-        {
-            "src": "/icons/Square150x150Logo.scale-125.png",
-            "sizes": "188x188",
-            "type": "image/png",
-            "purpose": "any maskable"
-        },
-        {
-            "src": "/icons/Square150x150Logo.scale-150.png",
-            "sizes": "225x225",
             "type": "image/png",
             "purpose": "any maskable"
         },
@@ -65,22 +25,6 @@
             "sizes": "600x600",
             "type": "image/png",
             "purpose": "any maskable"
-        },
-        {
-            "src": "/icons/Square44x44Logo.targetsize-256.png",
-            "sizes": "256x256",
-            "type": "image/png",
-            "purpose": "any maskable"
-        },
-        {
-            "src": "/icons/StoreLogo.scale-400.png",
-            "sizes": "400x400",
-            "type": "image/png"
-        },
-        {
-            "src": "/icons/Wide310x150Logo.scale-400.png",
-            "sizes": "1240x600",
-            "type": "image/png"
         }
     ]
 }
