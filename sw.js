@@ -1,5 +1,5 @@
 // ==============================================================
-// SAKA KEJA - SERVICE WORKER
+// SAKA KEJA - SERVICE WORKER (FIXED: GET only, skip Firebase APIs)
 // ==============================================================
 
 const CACHE_NAME = 'saka-keja-v1';
@@ -20,7 +20,7 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('📦 Caching files...');
+                console.log('📦 Caching static files...');
                 return cache.addAll(urlsToCache);
             })
             .then(() => self.skipWaiting())
@@ -46,13 +46,26 @@ self.addEventListener('activate', event => {
 });
 
 // ==============================================================
-// FETCH
+// FETCH - ONLY CACHE GET REQUESTS, SKIP FIREBASE API
 // ==============================================================
 self.addEventListener('fetch', event => {
+    // 1. Skip all non-GET requests (POST, PUT, DELETE, etc.)
+    if (event.request.method !== 'GET') {
+        return; // Let the browser handle these normally
+    }
+
+    // 2. Skip Firebase / Google API calls (they are dynamic)
+    const url = event.request.url;
+    if (url.includes('firebase') || url.includes('googleapis') || url.includes('gstatic')) {
+        // Just fetch from network without caching
+        event.respondWith(fetch(event.request));
+        return;
+    }
+
+    // 3. For all other GET requests, try cache first, then network
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                // Return cached version or fetch from network
                 if (response) {
                     console.log('📦 Serving from cache:', event.request.url);
                     return response;
@@ -60,19 +73,20 @@ self.addEventListener('fetch', event => {
                 console.log('🌐 Fetching from network:', event.request.url);
                 return fetch(event.request)
                     .then(networkResponse => {
-                        // Cache the new response for next time
                         if (networkResponse && networkResponse.status === 200) {
                             const responseToCache = networkResponse.clone();
                             caches.open(CACHE_NAME)
                                 .then(cache => {
                                     cache.put(event.request, responseToCache);
+                                })
+                                .catch(err => {
+                                    // Swallow errors if response is not cacheable
                                 });
                         }
                         return networkResponse;
                     })
                     .catch(error => {
                         console.log('⚠️ Network error:', error);
-                        // You could return a fallback page here
                     });
             })
     );
