@@ -28,19 +28,6 @@
         }
 
         /* ============================================================
-           SIMPLE FAST BACKGROUND
-           ============================================================ */
-        .bg-simple {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 0;
-            background: linear-gradient(135deg, #0b0f1e 0%, #1a1f3a 50%, #0f1428 100%);
-        }
-
-        /* ============================================================
            TOAST & LOADING
            ============================================================ */
         #toastContainer {
@@ -125,6 +112,20 @@
         }
 
         /* ============================================================
+           HERO SECTION WITH BACKGROUND IMAGE
+           ============================================================ */
+        .hero-section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background:
+                linear-gradient(135deg, rgba(11, 15, 30, 0.88) 0%, rgba(11, 15, 30, 0.75) 50%, rgba(11, 15, 30, 0.6) 100%),
+                url('./rental images/rental013.jpg') center/cover no-repeat fixed;
+            padding: 20px 24px 60px;
+        }
+
+        /* ============================================================
            LANDING PAGE CONTAINER
            ============================================================ */
         #landing {
@@ -132,7 +133,7 @@
             z-index: 1;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 24px 24px 60px;
+            width: 100%;
             animation: fadeIn 0.6s ease-out;
         }
 
@@ -149,12 +150,12 @@
             align-items: center;
             justify-content: space-between;
             padding: 14px 24px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
             margin-bottom: 40px;
             flex-wrap: wrap;
             gap: 12px;
@@ -181,7 +182,7 @@
         }
 
         .user-status {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.08);
             padding: 4px 14px;
             border-radius: 40px;
             font-size: 12px;
@@ -189,7 +190,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .user-status .logged-in {
@@ -222,42 +223,45 @@
         .btn-outline {
             background: transparent;
             color: #eef2f6;
-            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
         }
 
         .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #f97316, #fb923c);
             color: #0b0f1e;
+            box-shadow: 0 4px 16px rgba(249, 115, 22, 0.25);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
+            box-shadow: 0 8px 28px rgba(249, 115, 22, 0.4);
         }
 
         .btn-success {
             background: linear-gradient(135deg, #10b981, #34d399);
             color: #0b0f1e;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
         }
 
         .btn-success:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 8px 28px rgba(16, 185, 129, 0.35);
         }
 
         .btn-dashboard {
             background: linear-gradient(135deg, #8b5cf6, #a78bfa);
             color: #0b0f1e;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
         }
 
         .btn-dashboard:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+            box-shadow: 0 8px 28px rgba(139, 92, 246, 0.35);
         }
 
         .btn-danger {
@@ -267,13 +271,13 @@
 
         .btn-danger:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
         }
 
         /* ============================================================
-           HERO SECTION
+           HERO CONTENT
            ============================================================ */
-        .hero {
+        .hero-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 50px;
@@ -292,7 +296,7 @@
 
         .hero-text .badge {
             display: inline-block;
-            background: rgba(249, 115, 22, 0.12);
+            background: rgba(249, 115, 22, 0.15);
             color: #fb923c;
             padding: 3px 14px;
             border-radius: 40px;
@@ -319,7 +323,7 @@
 
         .hero-text p {
             font-size: 17px;
-            color: #94a3b8;
+            color: rgba(255, 255, 255, 0.7);
             max-width: 460px;
             margin-bottom: 28px;
             line-height: 1.7;
@@ -337,49 +341,83 @@
         }
 
         /* ============================================================
-           HERO IMAGE / CARD
+           HERO IMAGE / CARD - WITH PHYSICAL IMAGE
            ============================================================ */
         .hero-image {
             animation: fadeUp 0.6s ease-out 0.4s both;
         }
 
         .hero-image .card {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 24px;
-            padding: 28px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
+            padding: 28px 28px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
         }
 
         .hero-image .card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
 
-        .hero-image .card .icon {
-            font-size: 40px;
+        .hero-image .card .image-wrapper {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #1a1f3a, #0b0f1e);
+            aspect-ratio: 16 / 10;
+        }
+
+        .hero-image .card .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: block;
-            margin-bottom: 6px;
+            transition: transform 0.5s ease;
         }
 
-        .hero-image .card h3 {
+        .hero-image .card:hover .image-wrapper img {
+            transform: scale(1.03);
+        }
+
+        .hero-image .card .image-wrapper .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 16px 16px;
+            background: linear-gradient(to top, rgba(11, 15, 30, 0.85) 0%, transparent 100%);
+        }
+
+        .hero-image .card .image-wrapper .overlay .icon {
             font-size: 18px;
-            color: #eef2f6;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .hero-image .card .image-wrapper .overlay h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
             margin-bottom: 2px;
         }
 
-        .hero-image .card p {
+        .hero-image .card .image-wrapper .overlay p {
             font-size: 13px;
-            color: #94a3b8;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .hero-image .card .map-preview {
             margin-top: 14px;
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 14px;
             padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .hero-image .card .map-preview .pin-row {
@@ -387,7 +425,7 @@
             align-items: center;
             gap: 10px;
             padding: 6px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .hero-image .card .map-preview .pin-row:last-child {
@@ -416,65 +454,159 @@
         }
 
         /* ============================================================
-           FEATURES SECTION
+           FEATURES SECTION - WITH SCROLL BACKGROUND CHANGE
            ============================================================ */
         .features {
-            padding: 50px 0 20px;
+            padding: 70px 20px 50px;
+            background: #0b0f1e;
             animation: fadeUp 0.6s ease-out 0.6s both;
+            transition: background 0.8s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Scrolled state - lighter background with warm glow */
+        .features.scrolled {
+            background: linear-gradient(180deg, #0b0f1e 0%, #141a2e 40%, #1a1f3a 100%);
+        }
+
+        /* Glow overlay when scrolled */
+        .features.scrolled::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .features .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .features h2 {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 700;
             text-align: center;
             margin-bottom: 6px;
+            color: #eef2f6;
+        }
+
+        .features h2 span {
+            color: #f97316;
         }
 
         .features .subtitle {
             text-align: center;
             color: #94a3b8;
             font-size: 17px;
-            margin-bottom: 40px;
+            margin-bottom: 48px;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
         }
 
         .feature-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 20px;
-            padding: 24px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.4s ease;
             text-align: center;
+            position: relative;
+            backdrop-filter: blur(4px);
         }
 
         .feature-card:hover {
-            transform: translateY(-6px);
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(249, 115, 22, 0.15);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            transform: translateY(-10px);
+            border-color: rgba(249, 115, 22, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.07);
         }
 
-        .feature-card .icon {
-            font-size: 36px;
+        .feature-card .card-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
             display: block;
-            margin-bottom: 10px;
+            transition: transform 0.5s ease;
+        }
+
+        .feature-card:hover .card-image {
+            transform: scale(1.05);
+        }
+
+        .feature-card .card-body {
+            padding: 24px 20px 28px;
+            position: relative;
+        }
+
+        .feature-card .icon-wrapper {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #f97316, #fb923c);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 8px 24px rgba(249, 115, 22, 0.3);
+            border: 3px solid #0b0f1e;
         }
 
         .feature-card h4 {
-            font-size: 17px;
-            font-weight: 600;
-            margin-bottom: 4px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 8px;
+            margin-bottom: 6px;
             color: #eef2f6;
         }
 
         .feature-card p {
-            font-size: 13px;
+            font-size: 14px;
             color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        .feature-card .card-tag {
+            display: inline-block;
+            background: rgba(249, 115, 22, 0.12);
+            color: #fb923c;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-top: 10px;
+            border: 1px solid rgba(249, 115, 22, 0.1);
+        }
+
+        .feature-card:nth-child(1) .icon-wrapper {
+            background: linear-gradient(135deg, #f97316, #fb923c);
+        }
+
+        .feature-card:nth-child(2) .icon-wrapper {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        .feature-card:nth-child(3) .icon-wrapper {
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        }
+
+        .feature-card:nth-child(4) .icon-wrapper {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
         }
 
         /* ============================================================
@@ -526,7 +658,7 @@
            RESPONSIVE
            ============================================================ */
         @media screen and (max-width: 900px) {
-            .hero {
+            .hero-content {
                 grid-template-columns: 1fr;
                 text-align: center;
                 padding: 10px 0 20px;
@@ -550,11 +682,25 @@
             .navbar .nav-actions {
                 justify-content: center;
             }
+            .hero-section {
+                min-height: auto;
+                padding: 16px 16px 40px;
+                background-attachment: scroll;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .feature-card .card-image {
+                height: 150px;
+            }
         }
 
         @media screen and (max-width: 480px) {
             #landing {
-                padding: 14px 14px 40px;
+                padding: 0;
             }
             .hero-text h1 {
                 font-size: 28px;
@@ -582,13 +728,19 @@
             .hero-image .card {
                 padding: 16px;
             }
+            .navbar {
+                padding: 12px 16px;
+            }
+            .features h2 {
+                font-size: 28px;
+            }
+            .feature-card .card-image {
+                height: 180px;
+            }
         }
     </style>
 </head>
 <body>
-
-    <!-- ===== SIMPLE FAST BACKGROUND ===== -->
-    <div class="bg-simple"></div>
 
     <!-- ===== TOAST CONTAINER ===== -->
     <div id="toastContainer"></div>
@@ -599,107 +751,153 @@
         <p id="loadingText">Loading...</p>
     </div>
 
-    <!-- ===== LANDING PAGE ===== -->
-    <div id="landing">
+    <!-- ===== HERO SECTION WITH BACKGROUND IMAGE ===== -->
+    <section class="hero-section">
 
-        <!-- Navbar -->
-        <nav class="navbar">
-            <div class="logo">
-                🏠 Saka<span>Keja</span>
-            </div>
-            <div class="nav-actions">
-                <span class="user-status" id="userStatus">🔄 Checking...</span>
-                <div id="navButtons">
-                    <a href="login.html" class="btn btn-outline" id="signInBtn">Sign In</a>
-                    <a href="register.html" class="btn btn-primary" id="getStartedBtn">Get Started</a>
-                </div>
-            </div>
-        </nav>
+        <!-- ===== LANDING PAGE ===== -->
+        <div id="landing">
 
-        <!-- Hero -->
-        <section class="hero">
-            <div class="hero-text">
-                <span class="badge">🔥 Kenya's #1 Rental Platform</span>
-                <h1>
-                    Find Your <br />
-                    <span class="highlight">Dream Home</span> in<br />
-                    <span class="highlight-green">Nairobi &amp; Beyond</span>
-                </h1>
-                <p>
-                    Saka Keja connects tenants with verified rental properties across Kenya.
-                    Landlords list for free — tenants find their next home instantly.
-                </p>
-                <div class="hero-buttons" id="heroButtons">
-                    <a href="register.html" class="btn btn-success" id="heroRegisterBtn">👤 Create Account</a>
-                    <a href="login.html" class="btn btn-outline" id="heroLoginBtn">🔑 Sign In</a>
+            <!-- Navbar -->
+            <nav class="navbar">
+                <div class="logo">
+                    🏠 Saka<span>Keja</span>
                 </div>
-            </div>
-            <div class="hero-image">
-                <div class="card">
-                    <span class="icon">📍</span>
-                    <h3>Live Property Map</h3>
-                    <p>See available rentals in real-time</p>
-                    <div class="map-preview">
-                        <div class="pin-row">
-                            <span class="pin"></span>
-                            <span class="pin-text">🏠 2BR Apartment — Ruaka — KSh 25,000</span>
+                <div class="nav-actions">
+                    <span class="user-status" id="userStatus">🔄 Checking...</span>
+                    <div id="navButtons">
+                        <a href="login.html" class="btn btn-outline" id="signInBtn">Sign In</a>
+                        <a href="register.html" class="btn btn-primary" id="getStartedBtn">Get Started</a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Hero Content -->
+            <div class="hero-content">
+                <div class="hero-text">
+                    <span class="badge">🔥 Kenya's #1 Rental Platform</span>
+                    <h1>
+                        Find Your <br />
+                        <span class="highlight">Dream Home</span> in<br />
+                        <span class="highlight-green">Nairobi &amp; Beyond</span>
+                    </h1>
+                    <p>
+                        Saka Keja connects tenants with verified rental properties across Kenya.
+                        Landlords list for free — tenants find their next home instantly.
+                    </p>
+                    <div class="hero-buttons" id="heroButtons">
+                        <a href="register.html" class="btn btn-success" id="heroRegisterBtn">👤 Create Account</a>
+                        <a href="login.html" class="btn btn-outline" id="heroLoginBtn">🔑 Sign In</a>
+                    </div>
+                </div>
+
+                <!-- ===== HERO IMAGE CARD ===== -->
+                <div class="hero-image">
+                    <div class="card">
+                        <div class="image-wrapper">
+                            <img src="./rental images/rental001.jpg" alt="Modern rental house in Kenya" loading="lazy" />
+                            <div class="overlay">
+                                <span class="icon">📍</span>
+                                <h3>Live Property Map</h3>
+                                <p>See available rentals in real-time</p>
+                            </div>
                         </div>
-                        <div class="pin-row">
-                            <span class="pin green"></span>
-                            <span class="pin-text">🏠 Bedsitter — Donholm — KSh 15,000</span>
-                        </div>
-                        <div class="pin-row">
-                            <span class="pin purple"></span>
-                            <span class="pin-text">🏠 3BR House — Kilimani — KSh 45,000</span>
+
+                        <div class="map-preview">
+                            <div class="pin-row">
+                                <span class="pin"></span>
+                                <span class="pin-text">2BR Apartment — Ruaka — KSh 25,000</span>
+                            </div>
+                            <div class="pin-row">
+                                <span class="pin green"></span>
+                                <span class="pin-text">Bedsitter — Donholm — KSh 15,000</span>
+                            </div>
+                            <div class="pin-row">
+                                <span class="pin purple"></span>
+                                <span class="pin-text">3BR House — Kilimani — KSh 45,000</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Features -->
-        <section class="features">
-            <h2>Why Choose <span style="color:#f97316;">Saka Keja</span>?</h2>
+    <!-- ============================================================
+       FEATURES SECTION - WITH SCROLL BACKGROUND CHANGE
+       ============================================================ -->
+    <section class="features" id="featuresSection">
+        <div class="container">
+            <h2>Why Choose <span>Saka Keja</span>?</h2>
             <p class="subtitle">The smartest way to find or list rental properties in Kenya</p>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="icon">🗺️</span>
-                    <h4>Interactive Map</h4>
-                    <p>View all available properties on a live, zoomable map.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="icon">✅</span>
-                    <h4>Verified Listings</h4>
-                    <p>Every listing is verified by our team — no scams, no fakes.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="icon">📍</span>
-                    <h4>GPS Near Me</h4>
-                    <p>Find properties closest to your current location instantly.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="icon">🏠</span>
-                    <h4>Landlord Tools</h4>
-                    <p>List, manage, and boost your properties with ease.</p>
-                </div>
-            </div>
-        </section>
 
-        <!-- CTA -->
-        <section class="cta">
+            <div class="features-grid">
+
+                <!-- Card 1: Interactive Map -->
+                <div class="feature-card">
+                    <img class="card-image" src="./rental images/interactive map.jpg" alt="Interactive map showing properties" loading="lazy" />
+                    <div class="card-body">
+                        <div class="icon-wrapper">🗺️</div>
+                        <h4>Interactive Map</h4>
+                        <p>View all available properties on a live, zoomable map with real-time updates.</p>
+                        <span class="card-tag">📍 Live Location</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Verified Listings -->
+                <div class="feature-card">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&h=400&fit=crop" alt="Verified properties" loading="lazy" />
+                    <div class="card-body">
+                        <div class="icon-wrapper">✅</div>
+                        <h4>Verified Listings</h4>
+                        <p>Every listing is verified by our team — no scams, no fakes, only real houses.</p>
+                        <span class="card-tag">🔒 Trusted</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: GPS Near Me -->
+                <div class="feature-card">
+                    <img class="card-image" src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&h=400&fit=crop" alt="GPS location finder" loading="lazy" />
+                    <div class="card-body">
+                        <div class="icon-wrapper">📍</div>
+                        <h4>GPS Near Me</h4>
+                        <p>Find properties closest to your current location instantly with one tap.</p>
+                        <span class="card-tag">📱 One Tap</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: Landlord Tools -->
+                <div class="feature-card">
+                    <img class="card-image" src="./rental images/analytic01.jpg" alt="Landlord tools dashboard" loading="lazy" />
+                    <div class="card-body">
+                        <div class="icon-wrapper">🏠</div>
+                        <h4>Landlord Tools</h4>
+                        <p>List, manage, and boost your properties with ease using our landlord dashboard.</p>
+                        <span class="card-tag">📊 Analytics</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="landing">
             <h2>Ready to Find Your Next Home?</h2>
             <p>Join thousands of happy tenants and landlords using Saka Keja today.</p>
             <div class="btn-group" id="ctaButtons">
                 <a href="register.html" class="btn btn-success" id="ctaRegisterBtn">👤 Create Free Account</a>
                 <a href="login.html" class="btn btn-outline" id="ctaLoginBtn">🔑 Sign In</a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Footer -->
-        <footer class="footer">
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="landing">
             <p>&copy; 2026 Saka Keja. Built for Kenya.</p>
-        </footer>
-    </div>
+        </div>
+    </footer>
 
     <script>
         // ==============================================================
@@ -798,7 +996,7 @@
         }
 
         // ==============================================================
-        // AUTH STATE - FIXED: Shows user name and recovers missing profiles
+        // AUTH STATE
         // ==============================================================
         auth.onAuthStateChanged(async (user) => {
             document.getElementById('landing').style.display = 'block';
@@ -806,7 +1004,6 @@
             if (user) {
                 console.log('👤 User logged in:', user.email);
 
-                // ==== 1. FETCH USER DATA OR RECOVER ====
                 let userName = 'User';
                 let userRole = 'tenant';
 
@@ -814,11 +1011,9 @@
                     const doc = await db.collection('users').doc(user.uid).get();
                     console.log('📄 User document exists:', doc.exists);
 
-                    // In index.html - recovery section
                     if (!doc.exists) {
                         console.warn('⚠️ User document NOT found! Attempting recovery...');
                         try {
-                            // Try to get name from localStorage or use email
                             const savedName = localStorage.getItem('tempUserName') || user.displayName || user.email.split('@')[0] || 'User';
                             await db.collection('users').doc(user.uid).set({
                                 name: savedName,
@@ -840,10 +1035,8 @@
                     toastError('Error loading profile.');
                 }
 
-                // ==== 2. UPDATE UI WITH USER NAME ====
                 userStatus.innerHTML = `✅ <span class="logged-in">Welcome, ${userName}</span>`;
 
-                // ==== 3. UPDATE BUTTONS ====
                 navButtons.innerHTML = `
                     <button class="btn btn-danger" id="logoutBtnNav">🚪 Logout</button>
                     <button class="btn btn-dashboard" id="dashboardBtnNav">🚀 Dashboard</button>
@@ -862,7 +1055,6 @@
                 document.getElementById('dashboardBtnCta').addEventListener('click', goToDashboard);
 
             } else {
-                // ===== USER NOT LOGGED IN =====
                 userStatus.innerHTML = '🔴 <span class="logged-out">Not logged in</span>';
 
                 navButtons.innerHTML = `
@@ -882,6 +1074,22 @@
             }
         });
 
+        // ==============================================================
+        // SCROLL ANIMATION FOR FEATURES SECTION
+        // ==============================================================
+        document.addEventListener('scroll', function() {
+            const featuresSection = document.getElementById('featuresSection');
+            const rect = featuresSection.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+
+            // Check if features section is in view
+            if (rect.top < windowHeight && rect.bottom > 0) {
+                featuresSection.classList.add('scrolled');
+            } else {
+                featuresSection.classList.remove('scrolled');
+            }
+        });
+
         // Fallback if auth takes too long
         setTimeout(() => {
             const landing = document.getElementById('landing');
@@ -890,8 +1098,7 @@
             }
         }, 3000);
 
-        console.log('✅ Saka Keja optimized landing loaded with profile recovery.');
+        console.log('✅ Saka Keja landing page loaded with scroll background change.');
     </script>
 </body>
-</html>"<!-- v2.0.0 -->" 
-"<!-- v2.0.0 -->" 
+</html>
