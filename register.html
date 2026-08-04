@@ -432,7 +432,12 @@
                 role: role,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
-            await db.collection('users').doc(user.uid).set(userData);
+            await db.collection('users').doc(user.uid).set({
+                name: name,  // ← This must be the name from the input field
+                email: email,
+                role: role,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
             console.log('✅ User document saved to Firestore');
 
             // ===== STEP 3: Success =====
