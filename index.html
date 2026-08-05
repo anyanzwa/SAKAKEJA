@@ -112,7 +112,7 @@
         }
 
         /* ============================================================
-           HERO SECTION WITH BACKGROUND IMAGE
+           HERO SECTION WITH FIXED BACKGROUND IMAGE
            ============================================================ */
         .hero-section {
             position: relative;
@@ -123,6 +123,7 @@
                 linear-gradient(135deg, rgba(11, 15, 30, 0.88) 0%, rgba(11, 15, 30, 0.75) 50%, rgba(11, 15, 30, 0.6) 100%),
                 url('./rental images/rental013.jpg') center/cover no-repeat fixed;
             padding: 20px 24px 60px;
+            background-attachment: fixed;
         }
 
         /* ============================================================
@@ -454,20 +455,22 @@
         }
 
         /* ============================================================
-           FEATURES SECTION - WITH SCROLL BACKGROUND CHANGE
+           FEATURES SECTION - WITH SCROLL BACKGROUND CHANGE + IMAGE
            ============================================================ */
         .features {
             padding: 70px 20px 50px;
             background: #0b0f1e;
             animation: fadeUp 0.6s ease-out 0.6s both;
-            transition: background 0.8s ease;
+            transition: background 0.8s ease, background-image 0.8s ease;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
-        /* Scrolled state - lighter background with warm glow */
+        /* Scrolled state - background with image */
         .features.scrolled {
-            background: linear-gradient(180deg, #0b0f1e 0%, #141a2e 40%, #1a1f3a 100%);
+            background:
+                linear-gradient(180deg, rgba(11, 15, 30, 0.85) 0%, rgba(20, 26, 46, 0.9) 40%, rgba(26, 31, 58, 0.92) 100%),
+                url('./rental images/rental011.jpg') center/cover no-repeat fixed;
         }
 
         /* Glow overlay when scrolled */
@@ -478,7 +481,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(ellipse at 50% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+            background: radial-gradient(ellipse at 50% 0%, rgba(249, 115, 22, 0.12) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
@@ -616,6 +619,8 @@
             text-align: center;
             padding: 50px 20px 20px;
             animation: fadeUp 0.6s ease-out 0.8s both;
+            position: relative;
+            z-index: 2;
         }
 
         .cta h2 {
@@ -652,6 +657,8 @@
             margin-top: 32px;
             color: #64748b;
             font-size: 12px;
+            position: relative;
+            z-index: 2;
         }
 
         /* ============================================================
@@ -685,6 +692,9 @@
             .hero-section {
                 min-height: auto;
                 padding: 16px 16px 40px;
+                background-attachment: fixed;
+            }
+            .features.scrolled {
                 background-attachment: scroll;
             }
         }
@@ -823,7 +833,7 @@
     </section>
 
     <!-- ============================================================
-       FEATURES SECTION - WITH SCROLL BACKGROUND CHANGE
+       FEATURES SECTION - WITH SCROLL BACKGROUND CHANGE + IMAGE
        ============================================================ -->
     <section class="features" id="featuresSection">
         <div class="container">
@@ -1098,7 +1108,7 @@
             }
         }, 3000);
 
-        console.log('✅ Saka Keja landing page loaded with scroll background change.');
+        console.log('✅ Saka Keja landing page loaded with fixed background and scroll changes.');
     </script>
 </body>
 </html>
